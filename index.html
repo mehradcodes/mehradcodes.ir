@@ -15,6 +15,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700;800;900&display=swap" rel="stylesheet"/>
   <link rel="preload" as="image" href="assets/avatar.jpg"/>
+  <link rel="preload" as="image" href="assets/snake-hero.webp"/>
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
@@ -28,6 +29,8 @@
         <a href="#about">درباره</a>
         <a href="#portfolio">نمونه‌کارها</a>
         <a href="#courses">دوره‌ها</a>
+        <a href="#process">روند کار</a>
+        <a href="#archive">آرشیو</a>
         <a href="#contact">تماس</a>
       </nav>
     </div>
@@ -37,18 +40,18 @@
     <!-- Hero -->
     <section class="hero">
       <canvas id="stars" aria-hidden="true"></canvas>
+      <div class="orb" aria-hidden="true"></div>
+      <img class="hero-snake" src="assets/snake-hero.webp" alt="" width="320" height="640" decoding="async"/>
       <div class="wrap hero-inner">
-        <div class="hero-stage">
-          <div class="hero-avatar-wrap">
-            <img class="hero-avatar" src="assets/avatar.jpg" alt="مهراد فرهادی افشار" width="160" height="160" fetchpriority="high" decoding="async"/>
+        <p class="status-badge"><span class="dot"></span> سیرجان، ایران — آماده‌ی سفارش پروژه</p>
+        <h1 class="giant">از ایده تا اجرا،<br/><span class="grad">محصول دیجیتال</span> می‌سازم.</h1>
+        <div class="hero-who">
+          <img class="hero-avatar" src="assets/avatar.jpg" alt="مهراد فرهادی افشار" width="120" height="120" fetchpriority="high" decoding="async"/>
+          <div class="hero-who-text">
+            <p class="hero-name">مهراد فرهادی افشار</p>
+            <p class="role">برنامه‌نویس پایتون <span class="sep">|</span> طراح سایت</p>
           </div>
-          <span class="chip chip-1" dir="ltr">print()</span>
-          <span class="chip chip-2" dir="ltr">&lt;/&gt;</span>
-          <span class="chip chip-3" dir="ltr">def</span>
         </div>
-        <h1>مهراد فرهادی افشار</h1>
-        <p class="role">برنامه‌نویس پایتون <span class="sep">|</span> طراح سایت</p>
-        <p class="intro">از ایده تا اجرا، محصول دیجیتال می‌سازم.</p>
         <div class="cta-row">
           <a class="btn btn-primary" href="#courses">دیدن دوره‌ها</a>
           <a class="btn btn-ghost" href="https://t.me/mehradcodes" target="_blank" rel="noopener">سفارش پروژه</a>
@@ -62,6 +65,14 @@
       </div>
     </section>
 
+    <!-- Marquee divider -->
+    <div class="marquee" aria-hidden="true" dir="ltr">
+      <div class="marquee-track">
+        <span>mehradcodes ✦ python ✦ web design ✦&nbsp;</span>
+        <span>mehradcodes ✦ python ✦ web design ✦&nbsp;</span>
+      </div>
+    </div>
+
     <!-- About / resume -->
     <section id="about" class="section">
       <div class="wrap">
@@ -71,10 +82,12 @@
           <li>
             <strong>پایتون</strong>
             <span>ساخت ابزار، اسکریپت و خودکارسازی</span>
+            <code class="skill-code" dir="ltr">print("سلام دنیا")</code>
           </li>
           <li>
             <strong>طراحی سایت</strong>
             <span>فروشگاه آنلاین و سایت شخصی</span>
+            <div class="skill-browser" dir="ltr"><i></i><i></i><i></i><em>mehradcodes.ir</em></div>
           </li>
           <li>
             <strong>خودکارسازی</strong>
@@ -82,6 +95,29 @@
           </li>
         </ul>
       </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="stats" aria-label="آمار">
+      <div class="wrap stats-grid">
+        <div class="stat">
+          <span class="stat-num" data-target="13121">۰</span>
+          <span class="stat-label">بازدید ریل متغیرها</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num" data-target="464">۰</span>
+          <span class="stat-label">فالوور اینستاگرام</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num" data-target="7">۰</span>
+          <span class="stat-label">نمونه‌کار</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num" data-target="9">۰</span>
+          <span class="stat-label">دوره‌ی آموزشی</span>
+        </div>
+      </div>
+      <p class="stats-note">آمار اینستاگرام تا ۲۴ آبان ۱۴۰۵</p>
     </section>
 
     <!-- Portfolio -->
@@ -238,6 +274,71 @@
       </div>
     </section>
 
+    <!-- Process -->
+    <section id="process" class="section section-alt">
+      <div class="wrap">
+        <h2>روند انجام پروژه</h2>
+        <p class="section-lead">از اولین پیام تا تحویل — همین چهار قدم.</p>
+        <ol class="steps">
+          <li>
+            <span class="step-num">۰۱</span>
+            <strong>ایده و گفت‌وگو</strong>
+            <p>ایده‌ت رو تو تلگرام یا دایرکت می‌گی؛ با هم بررسی می‌کنیم چی ساخته بشه.</p>
+          </li>
+          <li>
+            <span class="step-num">۰۲</span>
+            <strong>طراحی</strong>
+            <p>ساختار، ظاهر و بخش‌های کار مشخص می‌شه.</p>
+          </li>
+          <li>
+            <span class="step-num">۰۳</span>
+            <strong>ساخت و تحویل</strong>
+            <p>می‌سازم، تست می‌کنم و تحویل می‌دم.</p>
+          </li>
+          <li>
+            <span class="step-num">۰۴</span>
+            <strong>پشتیبانی</strong>
+            <p>بعد از تحویل هم اگه جایی مشکل داشت، درستش می‌کنم.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Archive -->
+    <section id="archive" class="section">
+      <div class="wrap">
+        <h2>آرشیو کامل</h2>
+        <p class="section-lead">همه‌ی نمونه‌کارها و دوره‌ها در یک نگاه.</p>
+        <div class="table-scroll">
+          <table class="archive-table">
+            <thead>
+              <tr><th>نام</th><th>نوع / سطح</th><th>وضعیت</th><th>لینک</th></tr>
+            </thead>
+            <tbody>
+              <tr class="group-row"><td colspan="4">نمونه‌کارها</td></tr>
+              <tr><td>کاما شاپ</td><td>فروشگاه آنلاین</td><td>سایت زنده</td><td><a href="https://kamashop.ir" target="_blank" rel="noopener">مشاهده ←</a></td></tr>
+              <tr><td>تن‌آرا</td><td>استایل‌یاب</td><td>سایت زنده</td><td><a href="https://tanara-hgjnpdyj.manus.space" target="_blank" rel="noopener">مشاهده ←</a></td></tr>
+              <tr><td dir="ltr">TriLex</td><td>وب‌اپلیکیشن</td><td>سایت زنده</td><td><a href="https://mehradcodes.github.io/TriLex/" target="_blank" rel="noopener">مشاهده ←</a></td></tr>
+              <tr><td>پارنیان</td><td>کاتالوگ سه‌بعدی</td><td>سایت زنده</td><td><a href="https://mehradcodes.github.io/Parniyan/" target="_blank" rel="noopener">مشاهده ←</a></td></tr>
+              <tr><td dir="ltr">ATM System</td><td>ابزار پایتون</td><td>متن‌باز</td><td><a href="https://github.com/mehradcodes/atm-system" target="_blank" rel="noopener">گیت‌هاب ←</a></td></tr>
+              <tr><td>سیمرغ ایرلاین</td><td>دموی رزرو بلیط</td><td>دمو</td><td><a href="https://www.instagram.com/reel/DfpTLfSjqpX/" target="_blank" rel="noopener">ویدیو ←</a></td></tr>
+              <tr><td>سینما مهر</td><td>دموی سه‌بعدی</td><td>دمو</td><td><a href="https://www.instagram.com/reel/Dfl4Qelib5u/" target="_blank" rel="noopener">ویدیو ←</a></td></tr>
+              <tr class="group-row"><td colspan="4">دوره‌ها</td></tr>
+              <tr><td>پایتون مقدماتی</td><td>مقدماتی</td><td>۸ جلسه با تمرین</td><td><a href="https://t.me/mehradcodes" target="_blank" rel="noopener">ثبت‌نام ←</a></td></tr>
+              <tr><td>پایتون پیشرفته</td><td>پیشرفته</td><td>سرفصل‌ها به‌زودی</td><td><a href="https://t.me/mehradcodes" target="_blank" rel="noopener">ثبت‌نام ←</a></td></tr>
+              <tr><td>ماشین لرنینگ</td><td>پیشرفته</td><td>سرفصل‌ها به‌زودی</td><td><a href="https://t.me/mehradcodes" target="_blank" rel="noopener">ثبت‌نام ←</a></td></tr>
+              <tr><td>طراحی سایت با هوش مصنوعی — مقدماتی</td><td>مقدماتی</td><td>سرفصل‌ها به‌زودی</td><td><a href="https://t.me/mehradcodes" target="_blank" rel="noopener">ثبت‌نام ←</a></td></tr>
+              <tr><td>طراحی سایت با هوش مصنوعی — پیشرفته</td><td>پیشرفته</td><td>سرفصل‌ها به‌زودی</td><td><a href="https://t.me/mehradcodes" target="_blank" rel="noopener">ثبت‌نام ←</a></td></tr>
+              <tr><td>کار با هوش مصنوعی — مقدماتی</td><td>مقدماتی</td><td>سرفصل‌ها به‌زودی</td><td><a href="https://t.me/mehradcodes" target="_blank" rel="noopener">ثبت‌نام ←</a></td></tr>
+              <tr><td>کار با هوش مصنوعی — پیشرفته</td><td>پیشرفته</td><td>سرفصل‌ها به‌زودی</td><td><a href="https://t.me/mehradcodes" target="_blank" rel="noopener">ثبت‌نام ←</a></td></tr>
+              <tr><td>دوره‌ی <span dir="ltr">n8n</span></td><td>تخصصی</td><td>سرفصل‌ها به‌زودی</td><td><a href="https://t.me/mehradcodes" target="_blank" rel="noopener">ثبت‌نام ←</a></td></tr>
+              <tr><td>دوره‌ی امنیت</td><td>تخصصی</td><td>سرفصل‌ها به‌زودی</td><td><a href="https://t.me/mehradcodes" target="_blank" rel="noopener">ثبت‌نام ←</a></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
     <!-- Contact / footer -->
     <footer id="contact" class="footer">
       <div class="wrap">
@@ -255,7 +356,7 @@
   </main>
 
   <script>
-  // Light 3D: starfield + card tilt + hero parallax. Fine pointer only, respects reduced motion.
+  // Light 3D + counters: starfield, card tilt, count-up stats. Fine pointer only, respects reduced motion.
   (function () {
     var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var fine = window.matchMedia('(pointer: fine)').matches;
@@ -305,18 +406,31 @@
         });
         card.addEventListener('mouseleave', function () { card.style.transform = ''; });
       });
-      var stage = document.querySelector('.hero-stage');
-      var wrap = document.querySelector('.hero-avatar-wrap');
-      if (stage && wrap) {
-        stage.addEventListener('mousemove', function (e) {
-          var r = stage.getBoundingClientRect();
-          var x = (e.clientX - r.left) / r.width - 0.5;
-          var y = (e.clientY - r.top) / r.height - 0.5;
-          wrap.style.transform = 'rotateY(' + (x * 10).toFixed(2) + 'deg) rotateX(' + (-y * 10).toFixed(2) + 'deg)';
-        });
-        stage.addEventListener('mouseleave', function () { wrap.style.transform = ''; });
-      }
     }
+    // Count-up stats
+    function fmt(n) { return n.toLocaleString('fa-IR'); }
+    document.querySelectorAll('.stat-num').forEach(function (el) {
+      var target = parseInt(el.getAttribute('data-target'), 10);
+      if (reduce) { el.textContent = fmt(target); return; }
+      var done = false;
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (!en.isIntersecting || done) return;
+          done = true;
+          var start = null;
+          function step(ts) {
+            if (!start) start = ts;
+            var p = Math.min((ts - start) / 1200, 1);
+            var eased = 1 - Math.pow(1 - p, 3);
+            el.textContent = fmt(Math.round(target * eased));
+            if (p < 1) requestAnimationFrame(step);
+          }
+          requestAnimationFrame(step);
+          io.disconnect();
+        });
+      }, { threshold: 0.5 });
+      io.observe(el);
+    });
   })();
   </script>
 </body>
