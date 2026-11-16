@@ -629,3 +629,7 @@ section[id], footer[id] { scroll-margin-top: 76px; }
 @media (prefers-reduced-motion: reduce) {
   .acc-body, .acc-chev { transition: none; }
 }
+
+/* Social icons next to each link (hero + footer) */
+.hero-links a, .social a { display: inline-flex; align-items: center; justify-content: center; gap: 7px; }
+.hero-links a svg.ic, .social a svg.ic { width: 17px; height: 17px; flex: none; fill: currentColor; }
