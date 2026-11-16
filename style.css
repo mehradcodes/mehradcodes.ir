@@ -579,3 +579,35 @@ section[id], footer[id] { scroll-margin-top: 76px; }
   html { scroll-behavior: auto; }
   .hero-avatar, .hero-snake, .marquee-track, .status-badge .dot { animation: none; }
 }
+
+/* Courses accordion — tap the header to open, one open at a time */
+.acc-list { display: flex; flex-direction: column; gap: 12px; }
+.course-card.accordion { padding: 0; gap: 0; overflow: hidden; }
+.course-card.accordion:hover { transform: none; }
+.acc-head {
+  display: flex; align-items: center; gap: 12px; width: 100%;
+  padding: 18px 20px; background: none; border: none; cursor: pointer;
+  color: var(--ink); font: inherit; text-align: right;
+}
+.acc-head .badge { flex-shrink: 0; }
+.acc-title { flex: 1; font-size: 1.15rem; font-weight: 800; }
+.acc-chev {
+  flex-shrink: 0; width: 10px; height: 10px;
+  border-right: 2.5px solid var(--muted); border-bottom: 2.5px solid var(--muted);
+  transform: rotate(45deg); transition: transform 0.3s ease;
+}
+.course-card.open .acc-chev { transform: rotate(225deg); border-color: var(--ink); }
+.acc-body { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+.course-card.open .acc-body { max-height: 480px; }
+.acc-inner {
+  display: flex; flex-direction: column; gap: 10px;
+  padding: 0 20px 20px;
+}
+.btn-whatsapp {
+  color: #fff; background: #1faa55;
+  box-shadow: 0 8px 24px rgba(31, 170, 85, 0.3);
+}
+.btn-whatsapp:hover { background: #25d366; }
+@media (prefers-reduced-motion: reduce) {
+  .acc-body, .acc-chev { transition: none; }
+}
