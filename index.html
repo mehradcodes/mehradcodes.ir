@@ -101,23 +101,23 @@
     <section class="stats" aria-label="آمار">
       <div class="wrap stats-grid">
         <div class="stat">
-          <span class="stat-num" data-target="13121">۰</span>
-          <span class="stat-label">بازدید ریل متغیرها</span>
+          <span class="stat-num" data-target="24800">۰</span>
+          <span class="stat-label">بازدید کل پیج</span>
         </div>
         <div class="stat">
-          <span class="stat-num" data-target="464">۰</span>
+          <span class="stat-num" data-target="488">۰</span>
           <span class="stat-label">فالوور اینستاگرام</span>
         </div>
         <div class="stat">
-          <span class="stat-num" data-target="7">۰</span>
+          <span class="stat-num" id="stat-portfolio" data-target="7">۰</span>
           <span class="stat-label">نمونه‌کار</span>
         </div>
         <div class="stat">
-          <span class="stat-num" data-target="9">۰</span>
+          <span class="stat-num" id="stat-courses" data-target="9">۰</span>
           <span class="stat-label">دوره‌ی آموزشی</span>
         </div>
       </div>
-      <p class="stats-note">آمار اینستاگرام تا ۲۴ آبان ۱۴۰۵</p>
+      <p class="stats-note">آمار اینستاگرام تا ۲۵ آبان ۱۴۰۵</p>
     </section>
 
     <!-- Portfolio -->
@@ -408,6 +408,14 @@
       });
     }
     // Count-up stats
+    // Portfolio / courses counts follow the cards on the page: adding a
+    // card updates the number by itself, no hard-coded target to edit.
+    var pc = document.querySelectorAll('#portfolio .card').length;
+    var cc = document.querySelectorAll('.course-card').length;
+    var sp = document.getElementById('stat-portfolio');
+    var sc = document.getElementById('stat-courses');
+    if (sp && pc > 0) sp.setAttribute('data-target', pc);
+    if (sc && cc > 0) sc.setAttribute('data-target', cc);
     function fmt(n) { return n.toLocaleString('fa-IR'); }
     document.querySelectorAll('.stat-num').forEach(function (el) {
       var target = parseInt(el.getAttribute('data-target'), 10);
