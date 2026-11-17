@@ -304,7 +304,13 @@
     <div class="card" style="text-align:center; border-color: rgba(34,158,217,0.5);">
       <h3>🔐 ورود با تلگرام</h3>
       <p class="admin-hint" style="margin-top:8px;">برای ثبت‌نام و خرید، با تلگرام وارد شو — سفارشت به اکانت تلگرامت وصل می‌شه و ویدیوها همونجا برات باز می‌شه.</p>
-      <div id="tgLoginBtn" style="margin-top:8px;"></div>
+      <div class="actions" style="justify-content:center; margin-top:14px;"><button class="btn" id="getCodeBtn" type="button">🔗 دریافت کد ورود</button></div>
+      <div id="codeDisplay" style="display:none; margin-top:14px;">
+        <div class="auth-input" id="codeBig" style="font-size:30px; font-weight:900; letter-spacing:8px; padding:14px 12px; user-select:all;">••••••</div>
+        <p class="admin-hint" style="margin-top:10px;">این کد رو توی ربات بفرست — یا توی ربات روی «🔗 اتصال به سایت» بزن و کد رو وارد کن.</p>
+        <div class="actions" style="justify-content:center;"><button class="btn violet" id="openBotBtn" type="button">باز کردن ربات</button></div>
+        <div class="status" id="codeStatus" style="display:none;"></div>
+      </div>
       <div class="status" id="loginStatus" style="display:none;"></div>
     </div>
   </div>
@@ -413,7 +419,6 @@
   var session = '';
   try { session = localStorage.getItem('tg_session') || ''; } catch (e) {}
   var webUser = null;
-  var widgetInjected = false;
   var isAdmin = false;
   var currentCourse = null;
   var currentPayment = null;
@@ -442,32 +447,49 @@
     st.className = 'status' + (isErr ? ' err' : '');
   }
 
-  // Telegram Login Widget callback (global: the widget calls it by name).
-  // The widget hands us the Telegram user object; the Worker validates the
-  // signature and returns a session token.
-  window.onTelegramAuth = function (u) {
-    var st = document.getElementById('loginStatus');
-    if (st) { st.style.display = 'block'; st.textContent = 'در حال ورود…'; st.className = 'status'; }
-    fetch(WORKER + '/api/auth/widget', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(u)
-    }).then(function (r) { return r.json(); })
+  // Website login by pairing code: the site shows a random 6-digit code,
+  // the buyer sends it to the bot (or taps «اتصال به سایت» there), and the
+  // site polls until the bot claims it. No oauth popup, no telegram.org in
+  // the browser -- the robust path for buyers in Iran.
+  var codePollTimer = null;
+  var currentCode = null;
+  var codePolls = 0;
+  function stopCodePoll() {
+    if (codePollTimer) { clearInterval(codePollTimer); codePollTimer = null; }
+  }
+  function pollCodeStatus() {
+    if (!currentCode) return;
+    codePolls++;
+    if (codePolls > 200) { // 10 minutes of polling
+      stopCodePoll();
+      currentCode = null;
+      document.getElementById('codeDisplay').style.display = 'none';
+      var st = document.getElementById('loginStatus');
+      if (st) { st.style.display = 'block'; st.textContent = 'کد منقضی شد؛ یه کد تازه بگیر.'; st.className = 'status err'; }
+      return;
+    }
+    fetch(WORKER + '/api/auth/code-status?code=' + encodeURIComponent(currentCode))
+    .then(function (r) { return r.json(); })
     .then(function (data) {
-      if (!data.ok) {
-        if (st) { st.textContent = data.error || 'ورود نشد؛ دوباره امتحان کن.'; st.className = 'status err'; }
-        return;
+      if (data.status === 'claimed' && data.session) {
+        stopCodePoll();
+        currentCode = null;
+        saveSession(data.session);
+        webUser = data.user || null;
+        document.getElementById('loginBox').style.display = 'none';
+        if (data.phone_verified) hidePhoneBox(); else showPhoneBox();
+        renderProfile();
+        load();
+      } else if (data.status === 'expired') {
+        stopCodePoll();
+        currentCode = null;
+        document.getElementById('codeDisplay').style.display = 'none';
+        var st2 = document.getElementById('loginStatus');
+        if (st2) { st2.style.display = 'block'; st2.textContent = data.error || 'کد منقضی شد؛ یه کد تازه بگیر.'; st2.className = 'status err'; }
       }
-      saveSession(data.session);
-      webUser = data.user || null;
-      document.getElementById('loginBox').style.display = 'none';
-      if (data.phone_verified) hidePhoneBox(); else showPhoneBox();
-      renderProfile();
-      load();
-    }).catch(function () {
-      if (st) { st.textContent = 'ارتباط برقرار نشد؛ دوباره امتحان کن.'; st.className = 'status err'; }
-    });
-  };
+      // pending: keep waiting
+    }).catch(function () { /* a failed poll just retries next round */ });
+  }
 
   if (tg) {
     try {
@@ -823,22 +845,10 @@
     // Telegram login box below is the way in.
     var nn = document.getElementById('noInitNotice');
     if (nn) nn.style.display = (inTelegram && !initData) ? 'block' : 'none';
-    // Browser with no session yet: show the Telegram login box and inject
-    // the Login Widget button into it (once).
+    // Browser with no session yet: show the Telegram login box (the code
+    // flow lives there).
     var lb = document.getElementById('loginBox');
     if (lb) lb.style.display = (!inTelegram && !session) ? 'block' : 'none';
-    if (!inTelegram && !session && !widgetInjected) {
-      widgetInjected = true;
-      var s = document.createElement('script');
-      s.async = true;
-      s.src = 'https://telegram.org/js/telegram-widget.js?22';
-      s.setAttribute('data-telegram-login', 'mehradcodes_bot');
-      s.setAttribute('data-size', 'large');
-      s.setAttribute('data-userpic', 'false');
-      s.setAttribute('data-request-access', 'write');
-      s.setAttribute('data-on-auth', 'onTelegramAuth');
-      document.getElementById('tgLoginBtn').appendChild(s);
-    }
     var url = WORKER + '/api/courses' + (initData ? ('?initData=' + encodeURIComponent(initData)) : '');
     fetch(url, { headers: authHeaders() }).then(function (r) {
       if (!r.ok) throw new Error('http ' + r.status);
@@ -982,6 +992,47 @@
   document.getElementById('playerBackBtn').addEventListener('click', function () {
     haptic();
     closePlayer();
+  });
+
+  document.getElementById('getCodeBtn').addEventListener('click', function () {
+    haptic();
+    var st = document.getElementById('loginStatus');
+    if (st) { st.style.display = 'block'; st.textContent = 'در حال ساخت کد…'; st.className = 'status'; }
+    fetch(WORKER + '/api/auth/code', { method: 'POST' })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      if (!data.ok || !data.code) {
+        if (st) { st.textContent = 'کد ساخته نشد؛ دوباره امتحان کن.'; st.className = 'status err'; }
+        return;
+      }
+      stopCodePoll();
+      currentCode = data.code;
+      codePolls = 0;
+      if (st) st.style.display = 'none';
+      document.getElementById('codeBig').textContent = data.code;
+      document.getElementById('codeDisplay').style.display = 'block';
+      var cs = document.getElementById('codeStatus');
+      if (cs) { cs.style.display = 'block'; cs.textContent = 'منتظر تایید توی ربات…'; cs.className = 'status'; }
+      codePollTimer = setInterval(pollCodeStatus, 3000);
+    }).catch(function () {
+      if (st) { st.textContent = 'ارتباط برقرار نشد؛ دوباره امتحان کن.'; st.className = 'status err'; }
+    });
+  });
+
+  document.getElementById('openBotBtn').addEventListener('click', function () {
+    haptic();
+    openLink(BOT_URL);
+  });
+
+  document.getElementById('codeBig').addEventListener('click', function () {
+    var t = this.textContent.replace(/\s/g, '');
+    function done() {
+      var cs = document.getElementById('codeStatus');
+      if (cs) { cs.style.display = 'block'; cs.textContent = 'کد کپی شد ✅'; cs.className = 'status'; }
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done, done);
+    else done();
+    haptic();
   });
 
   document.getElementById('sendCodeBtn').addEventListener('click', function () {
