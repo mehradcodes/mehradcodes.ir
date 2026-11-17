@@ -647,7 +647,7 @@ section[id], footer[id] { scroll-margin-top: 76px; }
   .shop-banner-cta { justify-content: center; }
 }
 
-/* Floating Telegram button (the bot, everywhere on the site) */
+/* Floating Telegram button (support, everywhere on the site) */
 .tg-fab {
   position: fixed; bottom: 20px; left: 20px; z-index: 60;
   width: 56px; height: 56px; border-radius: 50%;
