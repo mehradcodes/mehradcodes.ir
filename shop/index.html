@@ -100,6 +100,28 @@
     font-family: inherit; font-size: 13px; font-weight: 800;
     text-decoration: underline; cursor: pointer; margin-right: 6px;
   }
+  /* ---------- phone verification notice ---------- */
+  .phone-notice {
+    display: none;
+    margin: 16px auto 4px;
+    width: fit-content;
+    max-width: 100%;
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.20), rgba(245, 158, 11, 0.06));
+    border: 1px solid rgba(245, 158, 11, 0.55);
+    color: #fbbf24;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 2;
+    padding: 7px 14px;
+    border-radius: 14px;
+    text-align: center;
+    box-shadow: 0 0 18px rgba(245, 158, 11, 0.18);
+  }
+  .phone-notice button {
+    background: none; border: none; color: #fbbf24;
+    font-family: inherit; font-size: 13px; font-weight: 800;
+    text-decoration: underline; cursor: pointer;
+  }
   /* ---------- admin price panel ---------- */
   .admin-panel { margin-top: 16px; border-color: rgba(245, 158, 11, 0.45); }
   .admin-panel h3 { margin: 0 0 6px; font-size: 15px; color: #fbbf24; }
@@ -220,6 +242,11 @@
   <div class="admin-badge" id="adminBadge">
     👑 شما ادمین هستید
     <button id="adminBtn" type="button">مدیریت قیمت‌ها</button>
+  </div>
+
+  <div class="phone-notice" id="phoneNotice">
+    📱 برای ثبت‌نام، اول شماره تماس ایرانی‌ت رو توی ربات تایید کن —
+    <button id="phoneBtn" type="button">باز کردن ربات</button>
   </div>
 
   <div id="adminPanel" style="display:none;">
@@ -421,6 +448,9 @@
     }).then(function (data) {
       isAdmin = !!data.is_admin;
       if (isAdmin) document.getElementById('adminBadge').style.display = 'block';
+      var pn = document.getElementById('phoneNotice');
+      if (initData && data.phone_verified === false) pn.style.display = 'block';
+      else pn.style.display = 'none';
       lastCourses = data.courses || [];
       render(lastCourses, true);
       if (isAdmin && panelOpen) renderAdminPanel();
@@ -529,6 +559,11 @@
       renderAdminPanel();
       p.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+  });
+
+  document.getElementById('phoneBtn').addEventListener('click', function () {
+    haptic();
+    openLink(BOT_URL);
   });
 
   load();
