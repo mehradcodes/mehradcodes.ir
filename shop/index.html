@@ -399,6 +399,11 @@
 <script>
 (function () {
   var tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+  // Inside Telegram (Mini App or its in-app browser)? The WebApp script
+  // loads in ANY browser, so `tg` alone proves nothing -- Chrome has a
+  // WebApp object with empty initData. The native bridge object exists only
+  // in Telegram's own webview; platform is 'unknown' outside Telegram.
+  var inTelegram = !!(window.TelegramWebviewProxy || (tg && tg.platform && tg.platform !== 'unknown'));
   var WORKER = 'https://mehradcodes-bot.haj0-0mehrad.workers.dev';
   var BOT_URL = 'https://t.me/mehradcodes_bot';
   var initData = tg ? (tg.initData || '') : '';
@@ -479,8 +484,8 @@
       .replace(/[٠-٩]/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'.indexOf(d); });
   }
   function openLink(url) {
-    if (tg && tg.openTelegramLink && url.indexOf('https://t.me/') === 0) tg.openTelegramLink(url);
-    else if (tg && tg.openLink) tg.openLink(url);
+    if (inTelegram && tg && tg.openTelegramLink && url.indexOf('https://t.me/') === 0) tg.openTelegramLink(url);
+    else if (inTelegram && tg && tg.openLink) tg.openLink(url);
     else window.open(url, '_blank');
   }
 
@@ -543,7 +548,7 @@
           + (priced
               ? (canOrder()
                   ? '<button class="btn" data-order="' + esc(c.id) + '">🛒 ثبت‌نام</button>'
-                  : (tg
+                  : (inTelegram
                       ? '<button class="btn ghost" data-open-bot="1">ثبت‌نام در ربات</button>'
                       : '<button class="btn" data-login="1">🔐 ورود و ثبت‌نام</button>'))
               : (live
@@ -812,16 +817,17 @@
 
   function load() {
     renderProfile();
-    // Opened inside Telegram but with NO initData = launched from a keyboard
-    // button (Telegram sends no identity on that path): admin panel, ordering
-    // and My Courses all need the in-chat button instead — say so.
+    // Opened inside Telegram's webview as a plain link (no initData):
+    // admin panel, ordering and My Courses need the in-chat shop button
+    // instead — say so. In a plain browser this notice stays hidden and the
+    // Telegram login box below is the way in.
     var nn = document.getElementById('noInitNotice');
-    if (nn) nn.style.display = (tg && !initData) ? 'block' : 'none';
+    if (nn) nn.style.display = (inTelegram && !initData) ? 'block' : 'none';
     // Browser with no session yet: show the Telegram login box and inject
     // the Login Widget button into it (once).
     var lb = document.getElementById('loginBox');
-    if (lb) lb.style.display = (!tg && !session) ? 'block' : 'none';
-    if (!tg && !session && !widgetInjected) {
+    if (lb) lb.style.display = (!inTelegram && !session) ? 'block' : 'none';
+    if (!inTelegram && !session && !widgetInjected) {
       widgetInjected = true;
       var s = document.createElement('script');
       s.async = true;
@@ -1029,7 +1035,7 @@
   // Startup: a saved browser session is restored first (the login survives
   // 30 days), then the shop loads. Inside the Mini App this is a no-op.
   function boot() {
-    if (tg || !session) { load(); return; }
+    if (inTelegram || !session) { load(); return; }
     fetch(WORKER + '/api/auth/me', { headers: authHeaders() })
     .then(function (r) { return r.json(); })
     .then(function (data) {
