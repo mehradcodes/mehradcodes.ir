@@ -225,6 +225,17 @@
   .actions .btn { flex: 1; }
   .note { text-align: center; color: var(--hint); font-size: 12.5px; line-height: 2; margin-top: 28px; }
   .note a { color: #c4b5fd; }
+  /* ---------- browser login (Telegram Login Widget) ---------- */
+  .auth-input {
+    width: 100%; background: rgba(0,0,0,0.35); border: 1px solid var(--card-border);
+    color: #fff; border-radius: 12px; padding: 11px 12px; font-family: inherit;
+    font-size: 15px; text-align: center; direction: ltr;
+  }
+  .auth-input:focus { outline: none; border-color: #7c3aed; }
+  .logout-link {
+    background: none; border: none; color: var(--hint); font-family: inherit;
+    font-size: 11px; cursor: pointer; text-decoration: underline; padding: 0;
+  }
   /* ---------- my courses + player ---------- */
   .sess { font-size: 12px; color: var(--hint); margin-top: 6px; }
   .my-row { display: flex; align-items: center; gap: 10px; padding: 11px 0; border-top: 1px solid rgba(255,255,255,0.07); }
@@ -287,6 +298,35 @@
   <div class="phone-notice" id="noInitNotice" style="display:none;">
     ⚠️ فروشگاه رو از دکمه‌ی «🛒 فروشگاه دوره‌ها» داخل چت ربات باز کن تا پنل مدیریت، ثبت‌نام و دوره‌های من برات فعال بشه —
     <button id="noInitBtn" type="button">باز کردن ربات</button>
+  </div>
+
+  <div id="loginBox" style="display:none;">
+    <div class="card" style="text-align:center; border-color: rgba(34,158,217,0.5);">
+      <h3>🔐 ورود با تلگرام</h3>
+      <p class="admin-hint" style="margin-top:8px;">برای ثبت‌نام و خرید، با تلگرام وارد شو — سفارشت به اکانت تلگرامت وصل می‌شه و ویدیوها همونجا برات باز می‌شه.</p>
+      <div id="tgLoginBtn" style="margin-top:8px;"></div>
+      <div class="status" id="loginStatus" style="display:none;"></div>
+    </div>
+  </div>
+
+  <div id="phoneBox" style="display:none;">
+    <div class="card" style="border-color: rgba(245,158,11,0.5);">
+      <h3>📱 تایید شماره تماس</h3>
+      <p class="admin-hint" style="margin-top:8px;">شماره‌ت رو بزن؛ کد تایید رو ربات برات توی تلگرام می‌فرسته. ویدیوها با همین شماره واترمارک می‌شن.</p>
+      <div class="field">
+        <label for="phoneInput">شماره موبایل (با ۰۹ شروع بشه)</label>
+        <input type="tel" class="auth-input" id="phoneInput" inputmode="tel" placeholder="09123456789">
+      </div>
+      <div class="actions"><button class="btn" id="sendCodeBtn" type="button">ارسال کد تایید</button></div>
+      <div id="codeStep" style="display:none;">
+        <div class="field">
+          <label for="codeInput">کد ۶ رقمی که ربات فرستاد</label>
+          <input type="text" class="auth-input" id="codeInput" inputmode="numeric" placeholder="••••••" style="font-size:17px; letter-spacing:4px;">
+        </div>
+        <div class="actions"><button class="btn" id="verifyCodeBtn" type="button">تایید و ورود</button></div>
+      </div>
+      <div class="status" id="phoneStatus" style="display:none;"></div>
+    </div>
   </div>
 
   <div id="myCourses" style="display:none;">
@@ -362,6 +402,13 @@
   var WORKER = 'https://mehradcodes-bot.haj0-0mehrad.workers.dev';
   var BOT_URL = 'https://t.me/mehradcodes_bot';
   var initData = tg ? (tg.initData || '') : '';
+  // Browser login: the Telegram Login Widget issues a session token, kept in
+  // localStorage for 30 days. Inside the Mini App initData is the identity
+  // and this stays empty.
+  var session = '';
+  try { session = localStorage.getItem('tg_session') || ''; } catch (e) {}
+  var webUser = null;
+  var widgetInjected = false;
   var isAdmin = false;
   var currentCourse = null;
   var currentPayment = null;
@@ -373,6 +420,49 @@
   var myUserId = null;
   var wmTimer = null;
   var currentPlayerCourse = null;
+
+  function authHeaders() { return session ? { 'Authorization': 'Bearer ' + session } : {}; }
+  function canOrder() { return !!(initData || session); }
+  function saveSession(s) {
+    session = s || '';
+    try { if (s) localStorage.setItem('tg_session', s); else localStorage.removeItem('tg_session'); } catch (e) {}
+  }
+  function showPhoneBox() { var b = document.getElementById('phoneBox'); if (b) b.style.display = 'block'; }
+  function hidePhoneBox() { var b = document.getElementById('phoneBox'); if (b) b.style.display = 'none'; }
+  function phoneStatusMsg(msg, isErr) {
+    var st = document.getElementById('phoneStatus');
+    if (!st) return;
+    st.style.display = 'block';
+    st.textContent = msg;
+    st.className = 'status' + (isErr ? ' err' : '');
+  }
+
+  // Telegram Login Widget callback (global: the widget calls it by name).
+  // The widget hands us the Telegram user object; the Worker validates the
+  // signature and returns a session token.
+  window.onTelegramAuth = function (u) {
+    var st = document.getElementById('loginStatus');
+    if (st) { st.style.display = 'block'; st.textContent = 'در حال ورود…'; st.className = 'status'; }
+    fetch(WORKER + '/api/auth/widget', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(u)
+    }).then(function (r) { return r.json(); })
+    .then(function (data) {
+      if (!data.ok) {
+        if (st) { st.textContent = data.error || 'ورود نشد؛ دوباره امتحان کن.'; st.className = 'status err'; }
+        return;
+      }
+      saveSession(data.session);
+      webUser = data.user || null;
+      document.getElementById('loginBox').style.display = 'none';
+      if (data.phone_verified) hidePhoneBox(); else showPhoneBox();
+      renderProfile();
+      load();
+    }).catch(function () {
+      if (st) { st.textContent = 'ارتباط برقرار نشد؛ دوباره امتحان کن.'; st.className = 'status err'; }
+    });
+  };
 
   if (tg) {
     try {
@@ -450,17 +540,28 @@
           + (priced
               ? '<span class="price">' + faNum(c.price) + ' <small>تومان</small></span>'
               : '<span class="price soon">قیمت به‌زودی اعلام می‌شود</span>')
-          + (live
-              ? (priced
+          + (priced
+              ? (canOrder()
                   ? '<button class="btn" data-order="' + esc(c.id) + '">🛒 ثبت‌نام</button>'
-                  : '<button class="btn" disabled>به‌زودی</button>')
-              : '<button class="btn ghost" data-open-bot="1">ثبت‌نام در ربات</button>')
+                  : (tg
+                      ? '<button class="btn ghost" data-open-bot="1">ثبت‌نام در ربات</button>'
+                      : '<button class="btn" data-login="1">🔐 ورود و ثبت‌نام</button>'))
+              : (live
+                  ? '<button class="btn" disabled>به‌زودی</button>'
+                  : '<button class="btn ghost" data-open-bot="1">ثبت‌نام در ربات</button>'))
           + '</div></div>';
       });
     });
     document.getElementById('list').innerHTML = html;
     document.querySelectorAll('[data-order]').forEach(function (b) {
       b.addEventListener('click', function () { haptic(); startOrder(b.getAttribute('data-order')); });
+    });
+    document.querySelectorAll('[data-login]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        haptic();
+        var lb = document.getElementById('loginBox');
+        if (lb) lb.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
     });
     document.querySelectorAll('[data-open-bot]').forEach(function (b) {
       b.addEventListener('click', function () { haptic(); openLink(BOT_URL); });
@@ -487,7 +588,7 @@
     var box = document.getElementById('adminVideoRows');
     if (!box) return;
     box.innerHTML = '<div class="status">در حال بارگذاری…</div>';
-    fetch(WORKER + '/api/videos?initData=' + encodeURIComponent(initData))
+    fetch(WORKER + '/api/videos?initData=' + encodeURIComponent(initData), { headers: authHeaders() })
     .then(function (r) { return r.json(); })
     .then(function (data) {
       if (!data.ok) { box.innerHTML = '<div class="status err">' + esc(data.error || 'خطا') + '</div>'; return; }
@@ -531,7 +632,7 @@
     fetch(WORKER + '/api/video-admin', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ initData: initData, courseId: courseId, action: 'set_total', total: total })
+      body: JSON.stringify({ initData: initData, session: session, courseId: courseId, action: 'set_total', total: total })
     }).then(function (r) { return r.json(); })
     .then(function (j) { if (j.ok) { loadAdminVideos(); load(); } });
   }
@@ -540,7 +641,7 @@
     fetch(WORKER + '/api/video-admin', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ initData: initData, courseId: courseId, action: 'remove', index: index })
+      body: JSON.stringify({ initData: initData, session: session, courseId: courseId, action: 'remove', index: index })
     }).then(function (r) { return r.json(); })
     .then(function (j) { if (j.ok) { loadAdminVideos(); load(); } });
   }
@@ -552,8 +653,8 @@
   }
 
   function loadMyCourses() {
-    if (!initData) return;
-    fetch(WORKER + '/api/my-courses?initData=' + encodeURIComponent(initData))
+    if (!initData && !session) return;
+    fetch(WORKER + '/api/my-courses?initData=' + encodeURIComponent(initData), { headers: authHeaders() })
     .then(function (r) { return r.json(); })
     .then(function (data) {
       if (!data.ok) return;
@@ -652,7 +753,7 @@
     fetch(WORKER + '/api/price', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ initData: initData, courseId: courseId, price: price })
+      body: JSON.stringify({ initData: initData, session: session, courseId: courseId, price: price })
     }).then(function (r) { return r.json().then(function (j) { return { status: r.status, body: j }; }); })
     .then(function (res) {
       if (res.status === 200 && res.body.ok) {
@@ -685,17 +786,21 @@
   }
 
   function renderProfile() {
-    var u = tg && tg.initDataUnsafe && tg.initDataUnsafe.user;
+    var u = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) || webUser;
     var bar = document.getElementById('profileBar');
     if (!u || !bar) return;
     var name = [u.first_name, u.last_name].filter(Boolean).join(' ') || 'کاربر تلگرام';
+    var isWeb = !!webUser && !(tg && tg.initDataUnsafe && tg.initDataUnsafe.user);
     bar.innerHTML = (u.photo_url
       ? '<img class="avatar" src="' + esc(u.photo_url) + '" alt="">'
       : '<div class="avatar-fallback">' + esc(name.charAt(0)) + '</div>')
       + '<div class="who"><b>' + esc(name) + '</b>'
       + (profilePhone ? '<span>' + esc(formatPhone(profilePhone)) + '</span>'
-        : (u.username ? '<span>@' + esc(u.username) + '</span>' : '<span>وارد شده با تلگرام</span>')) + '</div>';
+        : (u.username ? '<span>@' + esc(u.username) + '</span>' : '<span>وارد شده با تلگرام</span>')) + '</div>'
+      + (isWeb ? '<button class="logout-link" id="logoutBtn" type="button">خروج</button>' : '');
     bar.style.display = 'flex';
+    var lo = document.getElementById('logoutBtn');
+    if (lo) lo.addEventListener('click', function () { saveSession(''); webUser = null; location.reload(); });
     var img = bar.querySelector('img.avatar');
     if (img) img.addEventListener('error', function () {
       var fb = document.createElement('div');
@@ -712,8 +817,24 @@
     // and My Courses all need the in-chat button instead — say so.
     var nn = document.getElementById('noInitNotice');
     if (nn) nn.style.display = (tg && !initData) ? 'block' : 'none';
+    // Browser with no session yet: show the Telegram login box and inject
+    // the Login Widget button into it (once).
+    var lb = document.getElementById('loginBox');
+    if (lb) lb.style.display = (!tg && !session) ? 'block' : 'none';
+    if (!tg && !session && !widgetInjected) {
+      widgetInjected = true;
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://telegram.org/js/telegram-widget.js?22';
+      s.setAttribute('data-telegram-login', 'mehradcodes_bot');
+      s.setAttribute('data-size', 'large');
+      s.setAttribute('data-userpic', 'false');
+      s.setAttribute('data-request-access', 'write');
+      s.setAttribute('data-on-auth', 'onTelegramAuth');
+      document.getElementById('tgLoginBtn').appendChild(s);
+    }
     var url = WORKER + '/api/courses' + (initData ? ('?initData=' + encodeURIComponent(initData)) : '');
-    fetch(url).then(function (r) {
+    fetch(url, { headers: authHeaders() }).then(function (r) {
       if (!r.ok) throw new Error('http ' + r.status);
       return r.json();
     }).then(function (data) {
@@ -722,6 +843,9 @@
       var pn = document.getElementById('phoneNotice');
       if (initData && data.phone_verified === false) pn.style.display = 'block';
       else pn.style.display = 'none';
+      if (session) {
+        if (data.phone_verified) hidePhoneBox(); else showPhoneBox();
+      }
       lastCourses = data.courses || [];
       if (data.phone) setProfilePhone(data.phone);
       render(lastCourses, true);
@@ -733,13 +857,17 @@
   }
 
   function startOrder(courseId) {
-    if (!initData) { openLink(BOT_URL); return; }
+    if (!initData && !session) {
+      var lb = document.getElementById('loginBox');
+      if (lb) lb.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
     var list = document.getElementById('list');
     list.innerHTML = '<div class="status">در حال آماده‌سازی سفارش…</div>';
     fetch(WORKER + '/api/order', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ initData: initData, courseId: courseId })
+      body: JSON.stringify({ initData: initData, session: session, courseId: courseId })
     }).then(function (r) { return r.json().then(function (j) { return { status: r.status, body: j }; }); })
     .then(function (res) {
       if (res.status !== 200 || !res.body.ok) {
@@ -800,6 +928,7 @@
     st.textContent = 'در حال ارسال رسید…';
     var fd = new FormData();
     fd.append('initData', initData);
+    if (session) fd.append('session', session);
     fd.append('courseId', currentCourse.id);
     fd.append('photo', receiptFile);
     fetch(WORKER + '/api/receipt', { method: 'POST', body: fd })
@@ -849,7 +978,71 @@
     closePlayer();
   });
 
-  load();
+  document.getElementById('sendCodeBtn').addEventListener('click', function () {
+    haptic();
+    var input = document.getElementById('phoneInput');
+    var phone = toLatinDigits(input ? input.value : '').replace(/[^\d+]/g, '');
+    if (!session) { phoneStatusMsg('اول با تلگرام وارد شو.', true); return; }
+    phoneStatusMsg('در حال ارسال کد…', false);
+    fetch(WORKER + '/api/auth/phone', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ session: session, phone: phone })
+    }).then(function (r) { return r.json().then(function (j) { return { status: r.status, body: j }; }); })
+    .then(function (res) {
+      if (res.status === 200 && res.body.ok) {
+        document.getElementById('codeStep').style.display = 'block';
+        phoneStatusMsg('کد رو ربات برات توی تلگرام فرستاد — تلگرامت رو چک کن.');
+      } else if (res.body.need_bot_start) {
+        var st2 = document.getElementById('phoneStatus');
+        st2.style.display = 'block';
+        st2.className = 'status err';
+        st2.innerHTML = 'ربات نتونست بهت پیام بده؛ اول <a href="' + BOT_URL + '" target="_blank" style="color:#c4b5fd;">ربات رو استارت کن</a> بعد دوباره بزن.';
+      } else {
+        phoneStatusMsg(res.body.error || 'ارسال نشد؛ دوباره امتحان کن.', true);
+      }
+    }).catch(function () { phoneStatusMsg('ارتباط برقرار نشد؛ دوباره امتحان کن.', true); });
+  });
+
+  document.getElementById('verifyCodeBtn').addEventListener('click', function () {
+    haptic();
+    var code = toLatinDigits(document.getElementById('codeInput').value || '').replace(/[^\d]/g, '');
+    if (!session) { phoneStatusMsg('اول با تلگرام وارد شو.', true); return; }
+    phoneStatusMsg('در حال بررسی کد…', false);
+    fetch(WORKER + '/api/auth/verify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ session: session, code: code })
+    }).then(function (r) { return r.json().then(function (j) { return { status: r.status, body: j }; }); })
+    .then(function (res) {
+      if (res.status === 200 && res.body.ok) {
+        hidePhoneBox();
+        if (res.body.phone) setProfilePhone(res.body.phone);
+        document.getElementById('phoneStatus').style.display = 'none';
+        load();
+      } else {
+        phoneStatusMsg(res.body.error || 'کد تایید نشد؛ دوباره بزن.', true);
+      }
+    }).catch(function () { phoneStatusMsg('ارتباط برقرار نشد؛ دوباره امتحان کن.', true); });
+  });
+
+  // Startup: a saved browser session is restored first (the login survives
+  // 30 days), then the shop loads. Inside the Mini App this is a no-op.
+  function boot() {
+    if (tg || !session) { load(); return; }
+    fetch(WORKER + '/api/auth/me', { headers: authHeaders() })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      if (data.ok) {
+        webUser = data.user || null;
+        if (data.phone_verified) hidePhoneBox(); else showPhoneBox();
+        renderProfile();
+      } else saveSession('');
+      load();
+    }).catch(function () { load(); });
+  }
+
+  boot();
 })();
 </script>
 </body>
