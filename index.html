@@ -2,7 +2,7 @@
 <html lang="fa" dir="rtl">
 <head>
   <meta charset="UTF-8"/>
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://telegram.org; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://mehradcodes-bot.haj0-0mehrad.workers.dev; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"/>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://telegram.org; style-src 'self'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://mehradcodes-bot.haj0-0mehrad.workers.dev; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"/>
   <meta name="referrer" content="strict-origin-when-cross-origin"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>مهراد | طراحی سایت و پایتون — mehradcodes.ir</title>
@@ -429,107 +429,6 @@
   <a class="tg-fab" href="https://t.me/mehradcodes_support" target="_blank" rel="noopener" aria-label="پشتیبانی تلگرام مهرادیار"><svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg></a>
   </main>
 
-  <script>
-  // Light 3D + counters: starfield, card tilt, count-up stats. Fine pointer only, respects reduced motion.
-  (function () {
-    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var fine = window.matchMedia('(pointer: fine)').matches;
-    var cv = document.getElementById('stars');
-    if (cv && !reduce) {
-      var ctx = cv.getContext('2d');
-      var stars = [], w = 0, h = 0;
-      var dpr = Math.min(window.devicePixelRatio || 1, 2);
-      function size() {
-        var r = cv.parentElement.getBoundingClientRect();
-        w = r.width; h = r.height;
-        cv.width = w * dpr; cv.height = h * dpr;
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      }
-      function init() {
-        size();
-        var n = w < 640 ? 40 : 80;
-        stars = [];
-        for (var i = 0; i < n; i++) {
-          stars.push({ x: Math.random() * w, y: Math.random() * h, r: Math.random() * 1.4 + 0.4, s: Math.random() * 0.25 + 0.08, o: Math.random() * 0.5 + 0.25 });
-        }
-      }
-      function tick() {
-        ctx.clearRect(0, 0, w, h);
-        for (var i = 0; i < stars.length; i++) {
-          var st = stars[i];
-          st.y += st.s;
-          if (st.y > h + 2) { st.y = -2; st.x = Math.random() * w; }
-          ctx.globalAlpha = st.o;
-          ctx.fillStyle = '#cbb9ff';
-          ctx.beginPath(); ctx.arc(st.x, st.y, st.r, 0, 6.2832); ctx.fill();
-        }
-        ctx.globalAlpha = 1;
-        if (!document.hidden) requestAnimationFrame(tick);
-        else setTimeout(tick, 500);
-      }
-      init(); tick();
-      window.addEventListener('resize', init);
-    }
-    if (fine && !reduce) {
-      document.querySelectorAll('.card').forEach(function (card) {
-        card.addEventListener('mousemove', function (e) {
-          var r = card.getBoundingClientRect();
-          var x = (e.clientX - r.left) / r.width - 0.5;
-          var y = (e.clientY - r.top) / r.height - 0.5;
-          card.style.transform = 'perspective(900px) rotateY(' + (x * 6).toFixed(2) + 'deg) rotateX(' + (-y * 6).toFixed(2) + 'deg) translateY(-4px)';
-        });
-        card.addEventListener('mouseleave', function () { card.style.transform = ''; });
-      });
-    }
-    // Count-up stats
-    // Portfolio / courses counts follow the cards on the page: adding a
-    // card updates the number by itself, no hard-coded target to edit.
-    var pc = document.querySelectorAll('#portfolio .card').length;
-    var cc = document.querySelectorAll('.course-card').length;
-    var sp = document.getElementById('stat-portfolio');
-    var sc = document.getElementById('stat-courses');
-    if (sp && pc > 0) sp.setAttribute('data-target', pc);
-    if (sc && cc > 0) sc.setAttribute('data-target', cc);
-    // Course accordions: tap a header to open it; only one open at a time.
-    var accHeads = document.querySelectorAll('.course-card .acc-head');
-    accHeads.forEach(function (head) {
-      head.addEventListener('click', function () {
-        var item = head.closest('.course-card');
-        var wasOpen = item.classList.contains('open');
-        document.querySelectorAll('.course-card.open').forEach(function (o) {
-          o.classList.remove('open');
-          o.querySelector('.acc-head').setAttribute('aria-expanded', 'false');
-        });
-        if (!wasOpen) {
-          item.classList.add('open');
-          head.setAttribute('aria-expanded', 'true');
-        }
-      });
-    });
-    function fmt(n) { return n.toLocaleString('fa-IR'); }
-    document.querySelectorAll('.stat-num').forEach(function (el) {
-      var target = parseInt(el.getAttribute('data-target'), 10);
-      if (reduce) { el.textContent = fmt(target); return; }
-      var done = false;
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (en) {
-          if (!en.isIntersecting || done) return;
-          done = true;
-          var start = null;
-          function step(ts) {
-            if (!start) start = ts;
-            var p = Math.min((ts - start) / 1200, 1);
-            var eased = 1 - Math.pow(1 - p, 3);
-            el.textContent = fmt(Math.round(target * eased));
-            if (p < 1) requestAnimationFrame(step);
-          }
-          requestAnimationFrame(step);
-          io.disconnect();
-        });
-      }, { threshold: 0.5 });
-      io.observe(el);
-    });
-  })();
-  </script>
+    <script src="assets/js/main.js" defer></script>
 </body>
 </html>

@@ -1,0 +1,25 @@
+# MehradCodes — security headers, ready for any Apache host (cPanel, DirectAdmin, ...)
+# Just upload this file to the site root with the rest of the site. Nothing else to configure.
+# The values match the Cloudflare "Security headers" Transform Rule and the
+# meta CSP in the pages (grade A+ on securityheaders.com).
+# IMPORTANT: use only ONE source of headers at a time. If the site stays
+# behind the Cloudflare proxy, the Transform Rule already adds these headers
+# — then do NOT also enable them here (duplicates are harmless but messy).
+# If the site moves to this host WITHOUT Cloudflare in front, this file is
+# the only thing needed.
+
+<IfModule mod_headers.c>
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' https://telegram.org; style-src 'self'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://mehradcodes-bot.haj0-0mehrad.workers.dev; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+</IfModule>
+
+# Optional: force HTTPS (enable ONLY after the host has a valid SSL certificate).
+# <IfModule mod_rewrite.c>
+#   RewriteEngine On
+#   RewriteCond %{HTTPS} off
+#   RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+# </IfModule>

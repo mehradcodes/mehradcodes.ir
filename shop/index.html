@@ -2,274 +2,16 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://telegram.org; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://mehradcodes-bot.haj0-0mehrad.workers.dev; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://telegram.org; style-src 'self'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://mehradcodes-bot.haj0-0mehrad.workers.dev; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"/>
 <meta name="referrer" content="strict-origin-when-cross-origin"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>فروشگاه دوره‌های مهراد</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<style>
-  @font-face {
-    font-family: 'Vazirmatn';
-    src: url('../assets/fonts/vazirmatn-arabic.woff2') format('woff2');
-    font-weight: 100 900;
-    font-display: swap;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    color-scheme: dark;
-    --bg: #0b0b1e;
-    --text: #f4f2ff;
-    --hint: #a5a3c7;
-    --card: rgba(255, 255, 255, 0.06);
-    --card-border: rgba(255, 255, 255, 0.10);
-    --violet: #7c3aed;
-    --violet-soft: #a78bfa;
-    --green: #22c55e;
-    --green-soft: #4ade80;
-    --amber: #f59e0b;
-  }
-  body {
-    font-family: 'Vazirmatn', system-ui, sans-serif;
-    color: var(--text);
-    min-height: 100vh;
-    padding: 28px 16px 48px;
-    background:
-      radial-gradient(600px 320px at 85% -5%, rgba(124, 58, 237, 0.38), transparent 60%),
-      radial-gradient(520px 280px at 8% 108%, rgba(34, 197, 94, 0.20), transparent 60%),
-      var(--bg);
-    background-attachment: fixed;
-  }
-  .wrap { max-width: 560px; margin: 0 auto; }
-  /* ---------- hero ---------- */
-  header { text-align: center; padding: 6px 0 8px; position: relative; }
-  header img {
-    width: 118px; height: auto;
-    filter: drop-shadow(0 0 26px rgba(34, 197, 94, 0.55));
-  }
-  header h1 {
-    font-size: 27px; font-weight: 900; margin-top: 12px; line-height: 1.5;
-  }
-  header h1 span {
-    background: linear-gradient(135deg, #a78bfa 10%, #7c3aed 45%, #22c55e 90%);
-    -webkit-background-clip: text; background-clip: text;
-    -webkit-text-fill-color: transparent; color: transparent;
-  }
-  header p { color: var(--hint); font-size: 14px; margin-top: 6px; }
-  /* ---------- profile chip (Telegram login, top of the page) ---------- */
-  .profile { display: flex; align-items: center; gap: 10px; padding: 10px 4px 2px; }
-  .profile .avatar { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(167, 139, 250, 0.55); flex: none; }
-  .profile .avatar-fallback { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #7c3aed, #22c55e); color: #fff; font-weight: 900; font-size: 17px; display: flex; align-items: center; justify-content: center; flex: none; border: 2px solid rgba(167, 139, 250, 0.55); }
-  .profile .who { line-height: 1.35; min-width: 0; }
-  .profile .who b { font-size: 14.5px; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .profile .who span { font-size: 12px; color: var(--hint); display: block; }
-  .stats {
-    display: flex; gap: 8px; justify-content: center; margin-top: 16px;
-  }
-  .stat {
-    flex: 1; max-width: 150px;
-    background: rgba(255, 255, 255, 0.07);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 14px; padding: 9px 4px;
-  }
-  .stat b { display: block; font-size: 19px; font-weight: 900; color: #fff; }
-  .stat span { font-size: 11.5px; color: var(--hint); }
-  /* ---------- steps ---------- */
-  .steps {
-    display: flex; gap: 8px; margin: 18px 0 4px;
-  }
-  .step {
-    flex: 1; text-align: center;
-    background: rgba(124, 58, 237, 0.12);
-    border: 1px solid rgba(124, 58, 237, 0.30);
-    border-radius: 14px; padding: 10px 4px;
-  }
-  .step b {
-    display: block; width: 26px; height: 26px; line-height: 26px;
-    margin: 0 auto 6px; border-radius: 50%;
-    background: linear-gradient(135deg, #7c3aed, #4f46e5);
-    color: #fff; font-size: 14px;
-  }
-  .step span { font-size: 11.5px; line-height: 1.7; color: #d9d4f5; }
-  /* ---------- admin ---------- */
-  .admin-badge {
-    display: none;
-    margin: 16px auto 4px;
-    width: fit-content;
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.20), rgba(245, 158, 11, 0.06));
-    border: 1px solid rgba(245, 158, 11, 0.55);
-    color: #fbbf24;
-    font-size: 13px;
-    font-weight: 700;
-    padding: 7px 14px;
-    border-radius: 999px;
-    box-shadow: 0 0 18px rgba(245, 158, 11, 0.18);
-  }
-  .admin-badge button {
-    background: none; border: none; color: #fbbf24;
-    font-family: inherit; font-size: 13px; font-weight: 800;
-    text-decoration: underline; cursor: pointer; margin-right: 6px;
-  }
-  /* ---------- phone verification notice ---------- */
-  .phone-notice {
-    display: none;
-    margin: 16px auto 4px;
-    width: fit-content;
-    max-width: 100%;
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.20), rgba(245, 158, 11, 0.06));
-    border: 1px solid rgba(245, 158, 11, 0.55);
-    color: #fbbf24;
-    font-size: 13px;
-    font-weight: 700;
-    line-height: 2;
-    padding: 7px 14px;
-    border-radius: 14px;
-    text-align: center;
-    box-shadow: 0 0 18px rgba(245, 158, 11, 0.18);
-  }
-  .phone-notice button {
-    background: none; border: none; color: #fbbf24;
-    font-family: inherit; font-size: 13px; font-weight: 800;
-    text-decoration: underline; cursor: pointer;
-  }
-  /* ---------- admin price panel ---------- */
-  .admin-panel { margin-top: 16px; border-color: rgba(245, 158, 11, 0.45); }
-  .admin-panel h3 { margin: 0 0 6px; font-size: 15px; color: #fbbf24; }
-  .admin-hint { font-size: 12px; color: var(--hint); line-height: 2; margin: 0 0 12px; }
-  .admin-row { display: flex; align-items: center; gap: 8px; padding: 9px 0; border-top: 1px solid rgba(255,255,255,0.07); }
-  .admin-row:first-of-type { border-top: none; }
-  .admin-row .a-title { flex: 1; font-size: 13.5px; font-weight: 700; line-height: 1.8; }
-  .admin-row .a-title small { display: block; font-size: 11px; color: var(--hint); font-weight: 400; }
-  .admin-row input {
-    width: 130px; background: rgba(0,0,0,0.35); border: 1px solid var(--card-border);
-    color: #fff; border-radius: 10px; padding: 8px 10px; font-family: inherit;
-    font-size: 14px; text-align: center; direction: ltr;
-  }
-  .admin-row input:focus { outline: none; border-color: #f59e0b; }
-  .admin-row .btn { flex: none; padding: 8px 14px; font-size: 13px; }
-  /* ---------- course list ---------- */
-  .group-title {
-    display: flex; align-items: center; gap: 8px;
-    font-size: 16px; font-weight: 800; margin: 24px 2px 12px; color: #fff;
-  }
-  .group-title .g-dot {
-    width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
-  }
-  .group-title .g-line { flex: 1; height: 1px; }
-  .card {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03));
-    border: 1px solid var(--card-border);
-    border-radius: 18px;
-    padding: 15px 16px;
-    margin-bottom: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.30);
-  }
-  .c-head { display: flex; align-items: center; gap: 11px; }
-  .c-icon {
-    width: 46px; height: 46px; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 23px; border-radius: 15px; border: 1px solid;
-  }
-  .c-head h3 { font-size: 17px; font-weight: 800; line-height: 1.6; }
-  .pill {
-    display: inline-block;
-    font-size: 11px; font-weight: 700;
-    padding: 2px 9px; border-radius: 999px;
-    margin-right: 6px; vertical-align: middle; white-space: nowrap;
-  }
-  .pill.beginner { background: rgba(34, 197, 94, 0.18); color: #4ade80; }
-  .pill.advanced { background: rgba(124, 58, 237, 0.28); color: #c4b5fd; }
-  .pill.special { background: rgba(245, 158, 11, 0.18); color: #fbbf24; }
-  .card p.desc { color: var(--hint); font-size: 13.5px; line-height: 1.9; margin-top: 9px; }
-  .card .row { display: flex; align-items: center; justify-content: space-between; margin-top: 13px; gap: 10px; }
-  .price { font-size: 17px; font-weight: 900; color: var(--green-soft); }
-  .price small { font-size: 12px; color: var(--hint); font-weight: 400; }
-  .price.soon { color: var(--hint); font-size: 13px; font-weight: 400; }
-  .btn {
-    font-family: inherit; font-size: 14px; font-weight: 800;
-    background: linear-gradient(135deg, #22c55e, #16a34a); color: #fff;
-    border: none; border-radius: 13px;
-    padding: 11px 18px; cursor: pointer; white-space: nowrap;
-    box-shadow: 0 6px 18px rgba(34, 197, 94, 0.35);
-  }
-  .btn:active { transform: scale(0.97); }
-  .btn:disabled { opacity: 0.45; cursor: default; box-shadow: none; }
-  .btn.ghost {
-    background: rgba(255, 255, 255, 0.07);
-    border: 1px solid var(--card-border); color: var(--text); box-shadow: none;
-  }
-  .btn.violet { background: linear-gradient(135deg, #7c3aed, #4f46e5); box-shadow: 0 6px 18px rgba(124, 58, 237, 0.40); }
-  .status { text-align: center; color: var(--hint); font-size: 14px; padding: 30px 10px; line-height: 2; }
-  .status.err { color: #fca5a5; }
-  /* ---------- order panel ---------- */
-  #order { display: none; }
-  #order .card { border-color: rgba(34, 197, 94, 0.45); box-shadow: 0 0 28px rgba(34, 197, 94, 0.14); }
-  .pay-box {
-    background: rgba(0, 0, 0, 0.35);
-    border: 1px dashed rgba(255, 255, 255, 0.28);
-    border-radius: 14px; padding: 13px; margin-top: 12px;
-    text-align: center;
-  }
-  .pay-box code {
-    font-size: 20px; letter-spacing: 1px; direction: ltr;
-    display: block; margin: 7px 0; user-select: all; color: #fff; font-weight: 700;
-  }
-  .pay-box small { color: var(--hint); font-size: 12px; }
-  .copy-hint { font-size: 12px; color: var(--hint); margin-top: 5px; }
-  .field { margin-top: 14px; }
-  .field label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; }
-  .field input[type=file] {
-    width: 100%; font-family: inherit; font-size: 13px; color: var(--hint);
-    background: rgba(0,0,0,0.3); border: 1px solid var(--card-border);
-    border-radius: 12px; padding: 10px;
-  }
-  #receiptPreview { max-width: 100%; border-radius: 12px; margin-top: 10px; display: none; }
-  .actions { display: flex; gap: 10px; margin-top: 16px; }
-  .actions .btn { flex: 1; }
-  .note { text-align: center; color: var(--hint); font-size: 12.5px; line-height: 2; margin-top: 28px; }
-  .note a { color: #c4b5fd; }
-  /* ---------- browser login (Telegram Login Widget) ---------- */
-  .auth-input {
-    width: 100%; background: rgba(0,0,0,0.35); border: 1px solid var(--card-border);
-    color: #fff; border-radius: 12px; padding: 11px 12px; font-family: inherit;
-    font-size: 15px; text-align: center; direction: ltr;
-  }
-  .auth-input:focus { outline: none; border-color: #7c3aed; }
-  .logout-link {
-    background: none; border: none; color: var(--hint); font-family: inherit;
-    font-size: 11px; cursor: pointer; text-decoration: underline; padding: 0;
-  }
-  /* ---------- my courses + player ---------- */
-  .sess { font-size: 12px; color: var(--hint); margin-top: 6px; }
-  .my-row { display: flex; align-items: center; gap: 10px; padding: 11px 0; border-top: 1px solid rgba(255,255,255,0.07); }
-  .my-row:first-of-type { border-top: none; }
-  .my-row .m-title { flex: 1; font-size: 14.5px; font-weight: 700; line-height: 1.8; }
-  .my-row .m-title small { display: block; font-size: 11.5px; color: var(--hint); font-weight: 400; }
-  .player-wrap { position: relative; background: #000; border-radius: 14px; overflow: hidden; margin-top: 12px; }
-  .player-wrap video { width: 100%; display: block; max-height: 70vh; }
-  .wm {
-    position: absolute; z-index: 2; pointer-events: none;
-    font-size: 13px; font-weight: 700; direction: ltr; white-space: nowrap;
-    color: rgba(255,255,255,0.30); text-shadow: 0 1px 4px rgba(0,0,0,0.6);
-    transition: top 1.2s ease, left 1.2s ease;
-  }
-  .sess-btns { display: flex; flex-wrap: wrap; gap: 8px; }
-  .sess-btns .btn { padding: 8px 13px; font-size: 12.5px; }
-  .sess-btns .btn.active { background: linear-gradient(135deg, #7c3aed, #4f46e5); box-shadow: 0 6px 18px rgba(124, 58, 237, 0.40); }
-  /* ---------- admin video rows ---------- */
-  .v-row { padding: 10px 0; border-top: 1px solid rgba(255,255,255,0.07); }
-  .v-row:first-of-type { border-top: none; }
-  .v-row .v-head { display: flex; align-items: center; gap: 8px; }
-  .v-row .v-title { flex: 1; font-size: 13.5px; font-weight: 700; line-height: 1.8; }
-  .v-row .v-title small { display: block; font-size: 11px; color: var(--hint); font-weight: 400; }
-  .v-row input { width: 90px; }
-  .v-list { margin: 6px 0 2px; padding-right: 4px; }
-  .v-list div { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--hint); padding: 3px 0; }
-  .v-list button { background: none; border: none; color: #f87171; font-size: 15px; cursor: pointer; padding: 2px 6px; }
-</style>
+<link rel="stylesheet" href="style.css"/>
 </head>
 <body>
 <div class="wrap">
-  <div class="profile" id="profileBar" style="display:none"></div>
+  <div class="profile hidden" id="profileBar"></div>
   <header>
     <img src="../assets/snake-hero.webp" alt="مهرادیار">
     <h1>فروشگاه دوره‌های <span>مهراد</span></h1>
@@ -297,72 +39,72 @@
     <button id="phoneBtn" type="button">باز کردن ربات</button>
   </div>
 
-  <div class="phone-notice" id="noInitNotice" style="display:none;">
+  <div class="phone-notice hidden" id="noInitNotice">
     ⚠️ فروشگاه رو از دکمه‌ی «🛒 فروشگاه دوره‌ها» داخل چت ربات باز کن تا پنل مدیریت، ثبت‌نام و دوره‌های من برات فعال بشه —
     <button id="noInitBtn" type="button">باز کردن ربات</button>
   </div>
 
-  <div id="loginBox" style="display:none;">
-    <div class="card" style="text-align:center; border-color: rgba(34,158,217,0.5);">
+  <div id="loginBox" class="hidden">
+    <div class="card ta-c bc-blue">
       <h3>🔐 ورود با تلگرام</h3>
-      <p class="admin-hint" style="margin-top:8px;">برای ثبت‌نام و خرید، با تلگرام وارد شو — سفارشت به اکانت تلگرامت وصل می‌شه و ویدیوها همونجا برات باز می‌شه.</p>
-      <div class="actions" style="justify-content:center; margin-top:14px;"><button class="btn" id="getCodeBtn" type="button">🔗 دریافت کد ورود</button></div>
-      <div id="codeDisplay" style="display:none; margin-top:14px;">
-        <div class="auth-input" id="codeBig" style="font-size:30px; font-weight:900; letter-spacing:8px; padding:14px 12px; user-select:all;">••••••</div>
-        <p class="admin-hint" style="margin-top:10px;">این کد رو توی ربات بفرست — یا توی ربات روی «🔗 اتصال به سایت» بزن و کد رو وارد کن.</p>
-        <div class="actions" style="justify-content:center;"><button class="btn violet" id="openBotBtn" type="button">باز کردن ربات</button></div>
-        <div class="status" id="codeStatus" style="display:none;"></div>
+      <p class="admin-hint mt8">برای ثبت‌نام و خرید، با تلگرام وارد شو — سفارشت به اکانت تلگرامت وصل می‌شه و ویدیوها همونجا برات باز می‌شه.</p>
+      <div class="actions jc-c mt14"><button class="btn" id="getCodeBtn" type="button">🔗 دریافت کد ورود</button></div>
+      <div id="codeDisplay" class="hidden mt14">
+        <div class="auth-input code-big" id="codeBig">••••••</div>
+        <p class="admin-hint mt10">این کد رو توی ربات بفرست — یا توی ربات روی «🔗 اتصال به سایت» بزن و کد رو وارد کن.</p>
+        <div class="actions jc-c"><button class="btn violet" id="openBotBtn" type="button">باز کردن ربات</button></div>
+        <div class="status hidden" id="codeStatus"></div>
       </div>
-      <div class="status" id="loginStatus" style="display:none;"></div>
+      <div class="status hidden" id="loginStatus"></div>
     </div>
   </div>
 
-  <div id="phoneBox" style="display:none;">
-    <div class="card" style="border-color: rgba(245,158,11,0.5);">
+  <div id="phoneBox" class="hidden">
+    <div class="card bc-amber">
       <h3>📱 تایید شماره تماس</h3>
-      <p class="admin-hint" style="margin-top:8px;">شماره‌ت رو بزن؛ کد تایید رو ربات برات توی تلگرام می‌فرسته. ویدیوها با همین شماره واترمارک می‌شن.</p>
+      <p class="admin-hint mt8">شماره‌ت رو بزن؛ کد تایید رو ربات برات توی تلگرام می‌فرسته. ویدیوها با همین شماره واترمارک می‌شن.</p>
       <div class="field">
         <label for="phoneInput">شماره موبایل (با ۰۹ شروع بشه)</label>
         <input type="tel" class="auth-input" id="phoneInput" inputmode="tel" placeholder="09123456789">
       </div>
       <div class="actions"><button class="btn" id="sendCodeBtn" type="button">ارسال کد تایید</button></div>
-      <div id="codeStep" style="display:none;">
+      <div id="codeStep" class="hidden">
         <div class="field">
           <label for="codeInput">کد ۶ رقمی که ربات فرستاد</label>
-          <input type="text" class="auth-input" id="codeInput" inputmode="numeric" placeholder="••••••" style="font-size:17px; letter-spacing:4px;">
+          <input type="text" class="auth-input code-input" id="codeInput" inputmode="numeric" placeholder="••••••">
         </div>
         <div class="actions"><button class="btn" id="verifyCodeBtn" type="button">تایید و ورود</button></div>
       </div>
-      <div class="status" id="phoneStatus" style="display:none;"></div>
+      <div class="status hidden" id="phoneStatus"></div>
     </div>
   </div>
 
-  <div id="myCourses" style="display:none;">
-    <div class="card" style="border-color: rgba(34,197,94,0.45);">
+  <div id="myCourses" class="hidden">
+    <div class="card bc-green">
       <h3>🎬 دوره‌های من</h3>
       <div id="myCoursesList"></div>
     </div>
   </div>
 
-  <div id="player" style="display:none;">
+  <div id="player" class="hidden">
     <div class="card">
       <h3 id="playerTitle"></h3>
       <div class="player-wrap" id="playerWrap">
         <video id="playerVideo" controls playsinline preload="metadata"></video>
         <div class="wm" id="playerWm"></div>
       </div>
-      <div id="playerSessions" style="margin-top:12px;"></div>
+      <div id="playerSessions" class="mt12"></div>
       <div class="actions"><button class="btn ghost" id="playerBackBtn" type="button">بازگشت</button></div>
     </div>
   </div>
 
-  <div id="adminPanel" style="display:none;">
+  <div id="adminPanel" class="hidden">
     <div class="card admin-panel">
       <h3>⚙️ پنل مدیریت قیمت‌ها</h3>
       <p class="admin-hint">قیمت رو به تومان بنویس و «ذخیره» رو بزن (عدد فارسی هم قبوله). اگه خالی بذاری و ذخیره کنی، قیمت اون دوره حذف می‌شه و دکمه‌ی ثبت‌نامش مخفی می‌شه.</p>
       <div id="adminRows"></div>
-      <div class="status" id="adminStatus" style="display:none;"></div>
-      <h3 style="margin-top:18px;">🎬 ویدیوهای دوره‌ها</h3>
+      <div class="status hidden" id="adminStatus"></div>
+      <h3 class="mt18">🎬 ویدیوهای دوره‌ها</h3>
       <p class="admin-hint">ویدیوی هر جلسه رو توی چت ربات بفرست و دوره‌ش رو انتخاب کن؛ بعد اینجا لیست جلسات رو می‌بینی و می‌تونی جلسه حذف کنی یا تعداد کل جلسات دوره رو تنظیم کنی.</p>
       <div id="adminVideoRows"><div class="status">…</div></div>
     </div>
@@ -380,8 +122,8 @@
         <small id="cardOwner"></small>
         <div class="copy-hint">روی شماره بزن تا کپی بشه 👆</div>
       </div>
-      <div id="zarinWrap" style="display:none; margin-top: 12px;">
-        <button class="btn violet" id="zarinBtn" type="button" style="width:100%;">💳 پرداخت آنلاین</button>
+      <div id="zarinWrap" class="hidden mt12">
+        <button class="btn violet w100" id="zarinBtn" type="button">💳 پرداخت آنلاین</button>
       </div>
       <div class="field">
         <label for="receiptInput">📸 بعد از واریز، عکس رسید رو اینجا بفرست</label>
@@ -392,7 +134,7 @@
         <button class="btn" id="sendReceiptBtn" type="button" disabled>ارسال رسید</button>
         <button class="btn ghost" id="backBtn" type="button">بازگشت</button>
       </div>
-      <div class="status" id="orderStatus" style="display:none;"></div>
+      <div class="status hidden" id="orderStatus"></div>
     </div>
   </div>
 
@@ -404,705 +146,6 @@
   </p>
 </div>
 
-<script>
-(function () {
-  var tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
-  // Inside Telegram (Mini App or its in-app browser)? The WebApp script
-  // loads in ANY browser, so `tg` alone proves nothing -- Chrome has a
-  // WebApp object with empty initData. The native bridge object exists only
-  // in Telegram's own webview; platform is 'unknown' outside Telegram.
-  var inTelegram = !!(window.TelegramWebviewProxy || (tg && tg.platform && tg.platform !== 'unknown'));
-  var WORKER = 'https://mehradcodes-bot.haj0-0mehrad.workers.dev';
-  var BOT_URL = 'https://t.me/mehradcodes_bot';
-  var initData = tg ? (tg.initData || '') : '';
-  // Browser login: the Telegram Login Widget issues a session token, kept in
-  // localStorage for 30 days. Inside the Mini App initData is the identity
-  // and this stays empty.
-  var session = '';
-  try { session = localStorage.getItem('tg_session') || ''; } catch (e) {}
-  var webUser = null;
-  var isAdmin = false;
-  var currentCourse = null;
-  var currentPayment = null;
-  var receiptFile = null;
-  var lastCourses = [];
-  var panelOpen = false;
-  var myCourses = [];
-  var myPhone = null;
-  var myUserId = null;
-  var wmTimer = null;
-  var currentPlayerCourse = null;
-
-  function authHeaders() { return session ? { 'Authorization': 'Bearer ' + session } : {}; }
-  function canOrder() { return !!(initData || session); }
-  function saveSession(s) {
-    session = s || '';
-    try { if (s) localStorage.setItem('tg_session', s); else localStorage.removeItem('tg_session'); } catch (e) {}
-  }
-  function showPhoneBox() { var b = document.getElementById('phoneBox'); if (b) b.style.display = 'block'; }
-  function hidePhoneBox() { var b = document.getElementById('phoneBox'); if (b) b.style.display = 'none'; }
-  function phoneStatusMsg(msg, isErr) {
-    var st = document.getElementById('phoneStatus');
-    if (!st) return;
-    st.style.display = 'block';
-    st.textContent = msg;
-    st.className = 'status' + (isErr ? ' err' : '');
-  }
-
-  // Website login by pairing code: the site shows a random 6-digit code,
-  // the buyer sends it to the bot (or taps «اتصال به سایت» there), and the
-  // site polls until the bot claims it. No oauth popup, no telegram.org in
-  // the browser -- the robust path for buyers in Iran.
-  var codePollTimer = null;
-  var currentCode = null;
-  var codePolls = 0;
-  function stopCodePoll() {
-    if (codePollTimer) { clearInterval(codePollTimer); codePollTimer = null; }
-  }
-  function pollCodeStatus() {
-    if (!currentCode) return;
-    codePolls++;
-    if (codePolls > 200) { // 10 minutes of polling
-      stopCodePoll();
-      currentCode = null;
-      document.getElementById('codeDisplay').style.display = 'none';
-      var st = document.getElementById('loginStatus');
-      if (st) { st.style.display = 'block'; st.textContent = 'کد منقضی شد؛ یه کد تازه بگیر.'; st.className = 'status err'; }
-      return;
-    }
-    fetch(WORKER + '/api/auth/code-status?code=' + encodeURIComponent(currentCode))
-    .then(function (r) { return r.json(); })
-    .then(function (data) {
-      if (data.status === 'claimed' && data.session) {
-        stopCodePoll();
-        currentCode = null;
-        saveSession(data.session);
-        webUser = data.user || null;
-        document.getElementById('loginBox').style.display = 'none';
-        if (data.phone_verified) hidePhoneBox(); else showPhoneBox();
-        renderProfile();
-        load();
-      } else if (data.status === 'expired') {
-        stopCodePoll();
-        currentCode = null;
-        document.getElementById('codeDisplay').style.display = 'none';
-        var st2 = document.getElementById('loginStatus');
-        if (st2) { st2.style.display = 'block'; st2.textContent = data.error || 'کد منقضی شد؛ یه کد تازه بگیر.'; st2.className = 'status err'; }
-      }
-      // pending: keep waiting
-    }).catch(function () { /* a failed poll just retries next round */ });
-  }
-
-  if (tg) {
-    try {
-      tg.ready(); tg.expand();
-      if (tg.setBackgroundColor) tg.setBackgroundColor('#0b0b1e');
-      if (tg.setHeaderColor) tg.setHeaderColor('#0b0b1e');
-    } catch (e) {}
-  }
-  function haptic() { try { tg && tg.HapticFeedback && tg.HapticFeedback.impactOccurred('light'); } catch (e) {} }
-  function faNum(n) { return Number(n).toLocaleString('fa-IR'); }
-  function toLatinDigits(s) {
-    return String(s == null ? '' : s)
-      .replace(/[۰-۹]/g, function (d) { return '۰۱۲۳۴۵۶۷۸۹'.indexOf(d); })
-      .replace(/[٠-٩]/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'.indexOf(d); });
-  }
-  function openLink(url) {
-    if (inTelegram && tg && tg.openTelegramLink && url.indexOf('https://t.me/') === 0) tg.openTelegramLink(url);
-    else if (inTelegram && tg && tg.openLink) tg.openLink(url);
-    else window.open(url, '_blank');
-  }
-
-  // Static course list (names + descriptions only — prices NEVER live here;
-  // they come from the Worker, which reads the KV prices Mehrad sets in the Mini App admin panel).
-  // Used only if the live fetch fails (e.g. before the Worker update is deployed).
-  var STATIC_COURSES = [
-    { id: 'py-beginner', group: 'پایتون', title: 'پایتون مقدماتی', level: 'مقدماتی', icon: '🐍', desc: 'پایتون از صفر تا صد؛ با تمرین و پروژه‌ی کوچک در هر جلسه.' },
-    { id: 'py-advanced', group: 'پایتون', title: 'پایتون پیشرفته', level: 'پیشرفته', icon: '🚀', desc: 'ادامه‌ی مسیر پایتون؛ مباحث پیشرفته‌تر و پروژه‌های واقعی.' },
-    { id: 'ml', group: 'پایتون', title: 'ماشین لرنینگ', level: 'پیشرفته', icon: '🤖', desc: 'آشنایی با یادگیری ماشین با پایتون؛ از مبانی تا ساخت اولین مدل.' },
-    { id: 'web-ai-beginner', group: 'طراحی سایت با هوش مصنوعی', title: 'طراحی سایت با هوش مصنوعی — مقدماتی', level: 'مقدماتی', icon: '🌐', desc: 'ساخت سایت با ابزارهای هوش مصنوعی؛ بدون نیاز به تجربه‌ی قبلی.' },
-    { id: 'web-ai-advanced', group: 'طراحی سایت با هوش مصنوعی', title: 'طراحی سایت با هوش مصنوعی — پیشرفته', level: 'پیشرفته', icon: '🛒', desc: 'سایت‌های حرفه‌ای و فروشگاهی با هوش مصنوعی.' },
-    { id: 'ai-beginner', group: 'کار با هوش مصنوعی', title: 'کار با هوش مصنوعی — مقدماتی', level: 'مقدماتی', icon: '✨', desc: 'کاربرد روزمره و کاری هوش مصنوعی؛ پرامپت‌نویسی و ابزارها.' },
-    { id: 'ai-advanced', group: 'کار با هوش مصنوعی', title: 'کار با هوش مصنوعی — پیشرفته', level: 'پیشرفته', icon: '⚙️', desc: 'خودکارسازی کارها و ساخت گردش‌کار با هوش مصنوعی.' },
-    { id: 'n8n', group: 'اتوماسیون', title: 'دوره‌ی n8n', level: 'تخصصی', icon: '🔗', desc: 'خودکارسازی فرایندها و اتصال سرویس‌ها با n8n.' },
-    { id: 'security', group: 'امنیت', title: 'دوره‌ی امنیت', level: 'تخصصی', icon: '🔒', desc: 'مبانی امنیت وب و محافظت از سایت و داده‌ها.' }
-  ];
-  var GROUPS = [
-    { name: 'پایتون', icon: '🐍', color: '#22c55e' },
-    { name: 'طراحی سایت با هوش مصنوعی', icon: '🌐', color: '#a78bfa' },
-    { name: 'کار با هوش مصنوعی', icon: '✨', color: '#22d3ee' },
-    { name: 'اتوماسیون', icon: '🔗', color: '#fb923c' },
-    { name: 'امنیت', icon: '🔒', color: '#f87171' }
-  ];
-
-  function pillClass(level) {
-    return level === 'مقدماتی' ? 'beginner' : (level === 'پیشرفته' ? 'advanced' : 'special');
-  }
-  function esc(s) {
-    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  }
-
-  function render(courses, live) {
-    var html = '';
-    GROUPS.forEach(function (g) {
-      var items = courses.filter(function (c) { return c.group === g.name; });
-      if (!items.length) return;
-      html += '<div class="group-title">'
-        + '<span class="g-dot" style="background:' + g.color + ';box-shadow:0 0 12px ' + g.color + '"></span>'
-        + esc(g.icon) + ' ' + esc(g.name)
-        + '<span class="g-line" style="background:linear-gradient(90deg,' + g.color + '66,transparent)"></span>'
-        + '</div>';
-      items.forEach(function (c) {
-        var priced = c.price != null && Number(c.price) > 0;
-        var icon = c.icon || g.icon;
-        html += '<div class="card">'
-          + '<div class="c-head">'
-          + '<span class="c-icon" style="background:' + g.color + '22;border-color:' + g.color + '55">' + esc(icon) + '</span>'
-          + '<h3>' + esc(c.title) + ' <span class="pill ' + pillClass(c.level) + '">' + esc(c.level) + '</span></h3>'
-          + '</div>'
-          + '<p class="desc">' + esc(c.desc) + '</p>'
-          + (function () {
-              var total = (c.sessions_total != null && c.sessions_total > 0) ? c.sessions_total : (c.sessions || 0);
-              return total > 0 ? '<div class="sess">🎬 ' + faNum(total) + ' جلسه</div>' : '';
-            })()
-          + '<div class="row">'
-          + (priced
-              ? '<span class="price">' + faNum(c.price) + ' <small>تومان</small></span>'
-              : '<span class="price soon">قیمت به‌زودی اعلام می‌شود</span>')
-          + (priced
-              ? (canOrder()
-                  ? '<button class="btn" data-order="' + esc(c.id) + '">🛒 ثبت‌نام</button>'
-                  : (inTelegram
-                      ? '<button class="btn ghost" data-open-bot="1">ثبت‌نام در ربات</button>'
-                      : '<button class="btn" data-login="1">🔐 ورود و ثبت‌نام</button>'))
-              : (live
-                  ? '<button class="btn" disabled>به‌زودی</button>'
-                  : '<button class="btn ghost" data-open-bot="1">ثبت‌نام در ربات</button>'))
-          + '</div></div>';
-      });
-    });
-    document.getElementById('list').innerHTML = html;
-    document.querySelectorAll('[data-order]').forEach(function (b) {
-      b.addEventListener('click', function () { haptic(); startOrder(b.getAttribute('data-order')); });
-    });
-    document.querySelectorAll('[data-login]').forEach(function (b) {
-      b.addEventListener('click', function () {
-        haptic();
-        var lb = document.getElementById('loginBox');
-        if (lb) lb.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      });
-    });
-    document.querySelectorAll('[data-open-bot]').forEach(function (b) {
-      b.addEventListener('click', function () { haptic(); openLink(BOT_URL); });
-    });
-  }
-
-  function renderAdminPanel() {
-    var html = '';
-    lastCourses.forEach(function (c) {
-      html += '<div class="admin-row">'
-        + '<div class="a-title">' + esc(c.title) + '<small>' + esc(c.group) + ' · ' + esc(c.level) + '</small></div>'
-        + '<input type="text" inputmode="numeric" data-price-input="' + esc(c.id) + '" placeholder="بدون قیمت" value="' + (c.price != null ? esc(String(c.price)) : '') + '">'
-        + '<button class="btn" type="button" data-price-save="' + esc(c.id) + '">ذخیره</button>'
-        + '</div>';
-    });
-    document.getElementById('adminRows').innerHTML = html;
-    document.querySelectorAll('[data-price-save]').forEach(function (b) {
-      b.addEventListener('click', function () { haptic(); savePrice(b.getAttribute('data-price-save')); });
-    });
-    loadAdminVideos();
-  }
-
-  function loadAdminVideos() {
-    var box = document.getElementById('adminVideoRows');
-    if (!box) return;
-    box.innerHTML = '<div class="status">در حال بارگذاری…</div>';
-    fetch(WORKER + '/api/videos?initData=' + encodeURIComponent(initData), { headers: authHeaders() })
-    .then(function (r) { return r.json(); })
-    .then(function (data) {
-      if (!data.ok) { box.innerHTML = '<div class="status err">' + esc(data.error || 'خطا') + '</div>'; return; }
-      renderAdminVideos(data.courses || []);
-    }).catch(function () { box.innerHTML = '<div class="status err">ارتباط برقرار نشد.</div>'; });
-  }
-
-  function renderAdminVideos(courses) {
-    var html = '';
-    courses.forEach(function (c) {
-      html += '<div class="v-row">'
-        + '<div class="v-head">'
-        + '<div class="v-title">' + esc(c.title) + '<small>' + c.sessions.length + ' جلسه‌ی ویدیویی ثبت شده' + (c.sessions_total ? ' · هدف: ' + c.sessions_total + ' جلسه' : '') + '</small></div>'
-        + '<input type="text" inputmode="numeric" data-total-input="' + esc(c.id) + '" placeholder="تعداد جلسات" value="' + (c.sessions_total != null ? esc(String(c.sessions_total)) : '') + '">'
-        + '<button class="btn" type="button" data-total-save="' + esc(c.id) + '">ذخیره</button>'
-        + '</div>'
-        + '<div class="v-list">';
-      c.sessions.forEach(function (s) {
-        html += '<div><span style="flex:1;">' + esc(s.title) + '</span>'
-          + '<button type="button" data-vremove="' + esc(c.id) + ':' + s.index + '" title="حذف جلسه">✕</button></div>';
-      });
-      html += '</div></div>';
-    });
-    document.getElementById('adminVideoRows').innerHTML = html;
-    document.querySelectorAll('[data-total-save]').forEach(function (b) {
-      b.addEventListener('click', function () { haptic(); saveTotal(b.getAttribute('data-total-save')); });
-    });
-    document.querySelectorAll('[data-vremove]').forEach(function (b) {
-      b.addEventListener('click', function () {
-        haptic();
-        var parts = b.getAttribute('data-vremove').split(':');
-        removeSession(parts[0], Number(parts[1]));
-      });
-    });
-  }
-
-  function saveTotal(courseId) {
-    var input = document.querySelector('[data-total-input="' + courseId + '"]');
-    var raw = toLatinDigits(input ? input.value : '').replace(/[^\d]/g, '');
-    var total = raw === '' ? 0 : Number(raw);
-    fetch(WORKER + '/api/video-admin', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ initData: initData, session: session, courseId: courseId, action: 'set_total', total: total })
-    }).then(function (r) { return r.json(); })
-    .then(function (j) { if (j.ok) { loadAdminVideos(); load(); } });
-  }
-
-  function removeSession(courseId, index) {
-    fetch(WORKER + '/api/video-admin', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ initData: initData, session: session, courseId: courseId, action: 'remove', index: index })
-    }).then(function (r) { return r.json(); })
-    .then(function (j) { if (j.ok) { loadAdminVideos(); load(); } });
-  }
-
-  function formatPhone(d) {
-    var s = String(d || '').replace(/[^0-9]/g, '');
-    if (s.indexOf('98') === 0 && s.length === 12) return '0' + s.slice(2);
-    return s;
-  }
-
-  function loadMyCourses() {
-    if (!initData && !session) return;
-    fetch(WORKER + '/api/my-courses?initData=' + encodeURIComponent(initData), { headers: authHeaders() })
-    .then(function (r) { return r.json(); })
-    .then(function (data) {
-      if (!data.ok) return;
-      myCourses = data.courses || [];
-      myPhone = data.phone || null;
-      if (data.phone) setProfilePhone(data.phone);
-      myUserId = data.user_id || null;
-      renderMyCourses();
-    }).catch(function () {});
-  }
-
-  function renderMyCourses() {
-    var box = document.getElementById('myCourses');
-    if (!myCourses.length) { box.style.display = 'none'; return; }
-    var html = '';
-    myCourses.forEach(function (c) {
-      html += '<div class="my-row">'
-        + '<div class="m-title">' + esc(c.title) + '<small>' + c.sessions.length + ' جلسه‌ی ویدیویی</small></div>'
-        + '<button class="btn" type="button" data-watch="' + esc(c.id) + '">🎬 تماشا</button>'
-        + '</div>';
-    });
-    document.getElementById('myCoursesList').innerHTML = html;
-    box.style.display = 'block';
-    document.querySelectorAll('[data-watch]').forEach(function (b) {
-      b.addEventListener('click', function () {
-        haptic();
-        var c = null;
-        myCourses.forEach(function (x) { if (x.id === b.getAttribute('data-watch')) c = x; });
-        if (c) openPlayer(c, 0);
-      });
-    });
-  }
-
-  function moveWm() {
-    var wm = document.getElementById('playerWm');
-    var wrap = document.getElementById('playerWrap');
-    if (!wm || !wrap) return;
-    var maxL = Math.max(0, wrap.clientWidth - wm.offsetWidth - 8);
-    var maxT = Math.max(0, wrap.clientHeight - wm.offsetHeight - 8);
-    wm.style.left = (4 + Math.random() * maxL) + 'px';
-    wm.style.top = (4 + Math.random() * maxT) + 'px';
-  }
-
-  function openPlayer(course, idx) {
-    currentPlayerCourse = course;
-    var s = course.sessions[idx];
-    if (!s) return;
-    document.getElementById('list').style.display = 'none';
-    document.getElementById('order').style.display = 'none';
-    document.getElementById('myCourses').style.display = 'none';
-    document.getElementById('playerTitle').textContent = course.title + ' — ' + s.title;
-    var v = document.getElementById('playerVideo');
-    v.src = WORKER + '/api/stream?token=' + encodeURIComponent(s.token);
-    v.load();
-    var wm = document.getElementById('playerWm');
-    wm.textContent = formatPhone(myPhone) || ('ID ' + (myUserId || ''));
-    wm.style.left = '12px'; wm.style.top = '12px';
-    var btns = '';
-    course.sessions.forEach(function (x, i) {
-      btns += '<button class="btn' + (i === idx ? ' active' : '') + '" type="button" data-session="' + i + '">' + esc(x.title) + '</button>';
-    });
-    document.getElementById('playerSessions').innerHTML = '<div class="sess-btns">' + btns + '</div>';
-    document.querySelectorAll('[data-session]').forEach(function (b) {
-      b.addEventListener('click', function () { haptic(); openPlayer(course, Number(b.getAttribute('data-session'))); });
-    });
-    document.getElementById('player').style.display = 'block';
-    window.scrollTo(0, 0);
-    if (wmTimer) clearInterval(wmTimer);
-    wmTimer = setInterval(moveWm, 5000);
-    setTimeout(moveWm, 1200);
-    v.play().catch(function () {});
-  }
-
-  function closePlayer() {
-    var v = document.getElementById('playerVideo');
-    try { v.pause(); } catch (e) {}
-    v.removeAttribute('src');
-    v.load();
-    if (wmTimer) { clearInterval(wmTimer); wmTimer = null; }
-    document.getElementById('player').style.display = 'none';
-    document.getElementById('list').style.display = 'block';
-    renderMyCourses();
-    load();
-  }
-
-  function savePrice(courseId) {
-    var input = document.querySelector('[data-price-input="' + courseId + '"]');
-    var st = document.getElementById('adminStatus');
-    var raw = toLatinDigits(input ? input.value : '').replace(/[^\d]/g, '');
-    var price = raw === '' ? null : Number(raw);
-    if (price !== null && (!isFinite(price) || price <= 0)) {
-      st.style.display = 'block'; st.textContent = 'قیمت رو فقط به صورت عدد بفرست.';
-      return;
-    }
-    st.style.display = 'block'; st.textContent = 'در حال ذخیره…';
-    fetch(WORKER + '/api/price', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ initData: initData, session: session, courseId: courseId, price: price })
-    }).then(function (r) { return r.json().then(function (j) { return { status: r.status, body: j }; }); })
-    .then(function (res) {
-      if (res.status === 200 && res.body.ok) {
-        var c = null;
-        lastCourses.forEach(function (x) { if (x.id === courseId) c = x; });
-        st.textContent = price === null
-          ? 'قیمت «' + (c ? c.title : courseId) + '» حذف شد.'
-          : '✅ قیمت «' + (c ? c.title : courseId) + '» شد ' + faNum(price) + ' تومان.';
-        haptic();
-        load();
-      } else {
-        st.textContent = res.body.error || 'ذخیره نشد؛ دوباره امتحان کن.';
-      }
-    }).catch(function () { st.textContent = 'ارتباط برقرار نشد؛ دوباره امتحان کن.'; });
-  }
-
-  // Profile chip: Telegram sends the user's name + photo with every Mini App
-  // launch (initDataUnsafe.user), so the login is always visible at the top.
-  // Display-only; the server re-validates identity on every API call.
-  // The chip shows the name on top and the phone number below it. The number
-  // comes from the server (/api/courses returns the stored phone, and so does
-  // /api/my-courses) and arrives after the first render, so the subtitle is
-  // updated in place by setProfilePhone. Until then it is the @username.
-  var profilePhone = null;
-  function setProfilePhone(phone) {
-    profilePhone = phone || null;
-    var bar = document.getElementById('profileBar');
-    var sub = bar && bar.querySelector('.who span');
-    if (sub && profilePhone) sub.textContent = formatPhone(profilePhone);
-  }
-
-  function renderProfile() {
-    var u = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) || webUser;
-    var bar = document.getElementById('profileBar');
-    if (!u || !bar) return;
-    var name = [u.first_name, u.last_name].filter(Boolean).join(' ') || 'کاربر تلگرام';
-    var isWeb = !!webUser && !(tg && tg.initDataUnsafe && tg.initDataUnsafe.user);
-    bar.innerHTML = (u.photo_url
-      ? '<img class="avatar" src="' + esc(u.photo_url) + '" alt="">'
-      : '<div class="avatar-fallback">' + esc(name.charAt(0)) + '</div>')
-      + '<div class="who"><b>' + esc(name) + '</b>'
-      + (profilePhone ? '<span>' + esc(formatPhone(profilePhone)) + '</span>'
-        : (u.username ? '<span>@' + esc(u.username) + '</span>' : '<span>وارد شده با تلگرام</span>')) + '</div>'
-      + (isWeb ? '<button class="logout-link" id="logoutBtn" type="button">خروج</button>' : '');
-    bar.style.display = 'flex';
-    var lo = document.getElementById('logoutBtn');
-    if (lo) lo.addEventListener('click', function () { saveSession(''); webUser = null; location.reload(); });
-    var img = bar.querySelector('img.avatar');
-    if (img) img.addEventListener('error', function () {
-      var fb = document.createElement('div');
-      fb.className = 'avatar-fallback';
-      fb.textContent = name.charAt(0);
-      img.replaceWith(fb);
-    });
-  }
-
-  function load() {
-    renderProfile();
-    // Opened inside Telegram's webview as a plain link (no initData):
-    // admin panel, ordering and My Courses need the in-chat shop button
-    // instead — say so. In a plain browser this notice stays hidden and the
-    // Telegram login box below is the way in.
-    var nn = document.getElementById('noInitNotice');
-    if (nn) nn.style.display = (inTelegram && !initData) ? 'block' : 'none';
-    // Browser with no session yet: show the Telegram login box (the code
-    // flow lives there).
-    var lb = document.getElementById('loginBox');
-    if (lb) lb.style.display = (!inTelegram && !session) ? 'block' : 'none';
-    var url = WORKER + '/api/courses' + (initData ? ('?initData=' + encodeURIComponent(initData)) : '');
-    fetch(url, { headers: authHeaders() }).then(function (r) {
-      if (!r.ok) throw new Error('http ' + r.status);
-      return r.json();
-    }).then(function (data) {
-      isAdmin = !!data.is_admin;
-      if (isAdmin) document.getElementById('adminBadge').style.display = 'block';
-      var pn = document.getElementById('phoneNotice');
-      if (initData && data.phone_verified === false) pn.style.display = 'block';
-      else pn.style.display = 'none';
-      if (session) {
-        if (data.phone_verified) hidePhoneBox(); else showPhoneBox();
-      }
-      lastCourses = data.courses || [];
-      if (data.phone) setProfilePhone(data.phone);
-      render(lastCourses, true);
-      if (isAdmin && panelOpen) renderAdminPanel();
-      loadMyCourses();
-    }).catch(function () {
-      render(STATIC_COURSES, false);
-    });
-  }
-
-  function startOrder(courseId) {
-    if (!initData && !session) {
-      var lb = document.getElementById('loginBox');
-      if (lb) lb.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      return;
-    }
-    var list = document.getElementById('list');
-    list.innerHTML = '<div class="status">در حال آماده‌سازی سفارش…</div>';
-    fetch(WORKER + '/api/order', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ initData: initData, session: session, courseId: courseId })
-    }).then(function (r) { return r.json().then(function (j) { return { status: r.status, body: j }; }); })
-    .then(function (res) {
-      if (res.status !== 200 || !res.body.ok) {
-        list.innerHTML = '<div class="status err">' + esc(res.body.error || 'مشکلی پیش اومد؛ دوباره امتحان کن.') + '</div>';
-        setTimeout(load, 2500);
-        return;
-      }
-      currentCourse = res.body.course;
-      currentPayment = res.body.payment;
-      document.getElementById('orderTitle').textContent = 'ثبت‌نام: ' + currentCourse.title;
-      document.getElementById('orderPrice').innerHTML = faNum(currentCourse.price) + ' <small>تومان</small>';
-      document.getElementById('cardNumber').textContent = currentPayment.card || '';
-      document.getElementById('cardOwner').textContent = currentPayment.owner ? ('به نام ' + currentPayment.owner) : '';
-      var zw = document.getElementById('zarinWrap');
-      if (currentPayment.zarinpal) {
-        zw.style.display = 'block';
-        document.getElementById('zarinBtn').onclick = function () { openLink(currentPayment.zarinpal); };
-      } else zw.style.display = 'none';
-      document.getElementById('orderStatus').style.display = 'none';
-      document.getElementById('orderStatus').textContent = '';
-      document.getElementById('sendReceiptBtn').disabled = true;
-      receiptFile = null;
-      document.getElementById('receiptInput').value = '';
-      document.getElementById('receiptPreview').style.display = 'none';
-      list.style.display = 'none';
-      document.getElementById('order').style.display = 'block';
-      window.scrollTo(0, 0);
-    }).catch(function () {
-      list.innerHTML = '<div class="status err">ارتباط برقرار نشد؛ دوباره امتحان کن.</div>';
-      setTimeout(load, 2500);
-    });
-  }
-
-  document.getElementById('cardNumber').addEventListener('click', function () {
-    var t = this.textContent.replace(/\s/g, '');
-    function done() { document.querySelector('.copy-hint').textContent = 'کپی شد ✅'; }
-    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done, done);
-    else done();
-    haptic();
-  });
-
-  document.getElementById('receiptInput').addEventListener('change', function (e) {
-    var f = e.target.files && e.target.files[0];
-    receiptFile = f || null;
-    document.getElementById('sendReceiptBtn').disabled = !receiptFile;
-    var img = document.getElementById('receiptPreview');
-    if (f) {
-      var rd = new FileReader();
-      rd.onload = function (ev) { img.src = ev.target.result; img.style.display = 'block'; };
-      rd.readAsDataURL(f);
-    } else img.style.display = 'none';
-  });
-
-  document.getElementById('sendReceiptBtn').addEventListener('click', function () {
-    if (!receiptFile || !currentCourse) return;
-    var st = document.getElementById('orderStatus');
-    st.style.display = 'block';
-    st.textContent = 'در حال ارسال رسید…';
-    var fd = new FormData();
-    fd.append('initData', initData);
-    if (session) fd.append('session', session);
-    fd.append('courseId', currentCourse.id);
-    fd.append('photo', receiptFile);
-    fetch(WORKER + '/api/receipt', { method: 'POST', body: fd })
-    .then(function (r) { return r.json().then(function (j) { return { status: r.status, body: j }; }); })
-    .then(function (res) {
-      if (res.status === 200 && res.body.ok) {
-        st.textContent = 'رسیدت رسید ✅ مهراد بررسی‌ش می‌کنه؛ نتیجه رو تو ربات بهت می‌گه.';
-        document.getElementById('sendReceiptBtn').disabled = true;
-        haptic();
-        setTimeout(function () { if (tg) tg.close(); }, 4000);
-      } else {
-        st.textContent = res.body.error || 'ارسال نشد؛ دوباره امتحان کن.';
-      }
-    }).catch(function () { st.textContent = 'ارتباط برقرار نشد؛ دوباره امتحان کن.'; });
-  });
-
-  document.getElementById('backBtn').addEventListener('click', function () {
-    haptic();
-    document.getElementById('order').style.display = 'none';
-    document.getElementById('list').style.display = 'block';
-    load();
-  });
-
-  document.getElementById('adminBtn').addEventListener('click', function () {
-    haptic();
-    panelOpen = !panelOpen;
-    var p = document.getElementById('adminPanel');
-    p.style.display = panelOpen ? 'block' : 'none';
-    if (panelOpen) {
-      renderAdminPanel();
-      p.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  });
-
-  document.getElementById('phoneBtn').addEventListener('click', function () {
-    haptic();
-    openLink(BOT_URL);
-  });
-
-  document.getElementById('noInitBtn').addEventListener('click', function () {
-    haptic();
-    openLink(BOT_URL);
-  });
-
-  document.getElementById('playerBackBtn').addEventListener('click', function () {
-    haptic();
-    closePlayer();
-  });
-
-  document.getElementById('getCodeBtn').addEventListener('click', function () {
-    haptic();
-    var st = document.getElementById('loginStatus');
-    if (st) { st.style.display = 'block'; st.textContent = 'در حال ساخت کد…'; st.className = 'status'; }
-    fetch(WORKER + '/api/auth/code', { method: 'POST' })
-    .then(function (r) { return r.json(); })
-    .then(function (data) {
-      if (!data.ok || !data.code) {
-        if (st) { st.textContent = 'کد ساخته نشد؛ دوباره امتحان کن.'; st.className = 'status err'; }
-        return;
-      }
-      stopCodePoll();
-      currentCode = data.code;
-      codePolls = 0;
-      if (st) st.style.display = 'none';
-      document.getElementById('codeBig').textContent = data.code;
-      document.getElementById('codeDisplay').style.display = 'block';
-      var cs = document.getElementById('codeStatus');
-      if (cs) { cs.style.display = 'block'; cs.textContent = 'منتظر تایید توی ربات…'; cs.className = 'status'; }
-      codePollTimer = setInterval(pollCodeStatus, 3000);
-    }).catch(function () {
-      if (st) { st.textContent = 'ارتباط برقرار نشد؛ دوباره امتحان کن.'; st.className = 'status err'; }
-    });
-  });
-
-  document.getElementById('openBotBtn').addEventListener('click', function () {
-    haptic();
-    openLink(BOT_URL);
-  });
-
-  document.getElementById('codeBig').addEventListener('click', function () {
-    var t = this.textContent.replace(/\s/g, '');
-    function done() {
-      var cs = document.getElementById('codeStatus');
-      if (cs) { cs.style.display = 'block'; cs.textContent = 'کد کپی شد ✅'; cs.className = 'status'; }
-    }
-    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done, done);
-    else done();
-    haptic();
-  });
-
-  document.getElementById('sendCodeBtn').addEventListener('click', function () {
-    haptic();
-    var input = document.getElementById('phoneInput');
-    var phone = toLatinDigits(input ? input.value : '').replace(/[^\d+]/g, '');
-    if (!session) { phoneStatusMsg('اول با تلگرام وارد شو.', true); return; }
-    phoneStatusMsg('در حال ارسال کد…', false);
-    fetch(WORKER + '/api/auth/phone', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ session: session, phone: phone })
-    }).then(function (r) { return r.json().then(function (j) { return { status: r.status, body: j }; }); })
-    .then(function (res) {
-      if (res.status === 200 && res.body.ok) {
-        document.getElementById('codeStep').style.display = 'block';
-        phoneStatusMsg('کد رو ربات برات توی تلگرام فرستاد — تلگرامت رو چک کن.');
-      } else if (res.body.need_bot_start) {
-        var st2 = document.getElementById('phoneStatus');
-        st2.style.display = 'block';
-        st2.className = 'status err';
-        st2.innerHTML = 'ربات نتونست بهت پیام بده؛ اول <a href="' + BOT_URL + '" target="_blank" style="color:#c4b5fd;">ربات رو استارت کن</a> بعد دوباره بزن.';
-      } else {
-        phoneStatusMsg(res.body.error || 'ارسال نشد؛ دوباره امتحان کن.', true);
-      }
-    }).catch(function () { phoneStatusMsg('ارتباط برقرار نشد؛ دوباره امتحان کن.', true); });
-  });
-
-  document.getElementById('verifyCodeBtn').addEventListener('click', function () {
-    haptic();
-    var code = toLatinDigits(document.getElementById('codeInput').value || '').replace(/[^\d]/g, '');
-    if (!session) { phoneStatusMsg('اول با تلگرام وارد شو.', true); return; }
-    phoneStatusMsg('در حال بررسی کد…', false);
-    fetch(WORKER + '/api/auth/verify', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ session: session, code: code })
-    }).then(function (r) { return r.json().then(function (j) { return { status: r.status, body: j }; }); })
-    .then(function (res) {
-      if (res.status === 200 && res.body.ok) {
-        hidePhoneBox();
-        if (res.body.phone) setProfilePhone(res.body.phone);
-        document.getElementById('phoneStatus').style.display = 'none';
-        load();
-      } else {
-        phoneStatusMsg(res.body.error || 'کد تایید نشد؛ دوباره بزن.', true);
-      }
-    }).catch(function () { phoneStatusMsg('ارتباط برقرار نشد؛ دوباره امتحان کن.', true); });
-  });
-
-  // Startup: a saved browser session is restored first (the login survives
-  // 30 days), then the shop loads. Inside the Mini App this is a no-op.
-  function boot() {
-    if (inTelegram || !session) { load(); return; }
-    fetch(WORKER + '/api/auth/me', { headers: authHeaders() })
-    .then(function (r) { return r.json(); })
-    .then(function (data) {
-      if (data.ok) {
-        webUser = data.user || null;
-        if (data.phone_verified) hidePhoneBox(); else showPhoneBox();
-        renderProfile();
-      } else saveSession('');
-      load();
-    }).catch(function () { load(); });
-  }
-
-  boot();
-})();
-</script>
+  <script src="app.js" defer></script>
 </body>
 </html>
