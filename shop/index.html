@@ -100,6 +100,21 @@
     font-family: inherit; font-size: 13px; font-weight: 800;
     text-decoration: underline; cursor: pointer; margin-right: 6px;
   }
+  /* ---------- admin price panel ---------- */
+  .admin-panel { margin-top: 16px; border-color: rgba(245, 158, 11, 0.45); }
+  .admin-panel h3 { margin: 0 0 6px; font-size: 15px; color: #fbbf24; }
+  .admin-hint { font-size: 12px; color: var(--hint); line-height: 2; margin: 0 0 12px; }
+  .admin-row { display: flex; align-items: center; gap: 8px; padding: 9px 0; border-top: 1px solid rgba(255,255,255,0.07); }
+  .admin-row:first-of-type { border-top: none; }
+  .admin-row .a-title { flex: 1; font-size: 13.5px; font-weight: 700; line-height: 1.8; }
+  .admin-row .a-title small { display: block; font-size: 11px; color: var(--hint); font-weight: 400; }
+  .admin-row input {
+    width: 130px; background: rgba(0,0,0,0.35); border: 1px solid var(--card-border);
+    color: #fff; border-radius: 10px; padding: 8px 10px; font-family: inherit;
+    font-size: 14px; text-align: center; direction: ltr;
+  }
+  .admin-row input:focus { outline: none; border-color: #f59e0b; }
+  .admin-row .btn { flex: none; padding: 8px 14px; font-size: 13px; }
   /* ---------- course list ---------- */
   .group-title {
     display: flex; align-items: center; gap: 8px;
@@ -207,6 +222,15 @@
     <button id="adminBtn" type="button">مدیریت قیمت‌ها</button>
   </div>
 
+  <div id="adminPanel" style="display:none;">
+    <div class="card admin-panel">
+      <h3>⚙️ پنل مدیریت قیمت‌ها</h3>
+      <p class="admin-hint">قیمت رو به تومان بنویس و «ذخیره» رو بزن (عدد فارسی هم قبوله). اگه خالی بذاری و ذخیره کنی، قیمت اون دوره حذف می‌شه و دکمه‌ی ثبت‌نامش مخفی می‌شه.</p>
+      <div id="adminRows"></div>
+      <div class="status" id="adminStatus" style="display:none;"></div>
+    </div>
+  </div>
+
   <div id="list"><div class="status">در حال بارگذاری دوره‌ها…</div></div>
 
   <div id="order">
@@ -252,6 +276,8 @@
   var currentCourse = null;
   var currentPayment = null;
   var receiptFile = null;
+  var lastCourses = [];
+  var panelOpen = false;
 
   if (tg) {
     try {
@@ -262,6 +288,11 @@
   }
   function haptic() { try { tg && tg.HapticFeedback && tg.HapticFeedback.impactOccurred('light'); } catch (e) {} }
   function faNum(n) { return Number(n).toLocaleString('fa-IR'); }
+  function toLatinDigits(s) {
+    return String(s == null ? '' : s)
+      .replace(/[۰-۹]/g, function (d) { return '۰۱۲۳۴۵۶۷۸۹'.indexOf(d); })
+      .replace(/[٠-٩]/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'.indexOf(d); });
+  }
   function openLink(url) {
     if (tg && tg.openTelegramLink && url.indexOf('https://t.me/') === 0) tg.openTelegramLink(url);
     else if (tg && tg.openLink) tg.openLink(url);
@@ -269,7 +300,7 @@
   }
 
   // Static course list (names + descriptions only — prices NEVER live here;
-  // they come from the Worker, which reads the KV prices Mehrad sets in /admin).
+  // they come from the Worker, which reads the KV prices Mehrad sets in the Mini App admin panel).
   // Used only if the live fetch fails (e.g. before the Worker update is deployed).
   var STATIC_COURSES = [
     { id: 'py-beginner', group: 'پایتون', title: 'پایتون مقدماتی', level: 'مقدماتی', icon: '🐍', desc: 'پایتون از صفر تا صد؛ با تمرین و پروژه‌ی کوچک در هر جلسه.' },
@@ -337,6 +368,51 @@
     });
   }
 
+  function renderAdminPanel() {
+    var html = '';
+    lastCourses.forEach(function (c) {
+      html += '<div class="admin-row">'
+        + '<div class="a-title">' + esc(c.title) + '<small>' + esc(c.group) + ' · ' + esc(c.level) + '</small></div>'
+        + '<input type="text" inputmode="numeric" data-price-input="' + esc(c.id) + '" placeholder="بدون قیمت" value="' + (c.price != null ? esc(String(c.price)) : '') + '">'
+        + '<button class="btn" type="button" data-price-save="' + esc(c.id) + '">ذخیره</button>'
+        + '</div>';
+    });
+    document.getElementById('adminRows').innerHTML = html;
+    document.querySelectorAll('[data-price-save]').forEach(function (b) {
+      b.addEventListener('click', function () { haptic(); savePrice(b.getAttribute('data-price-save')); });
+    });
+  }
+
+  function savePrice(courseId) {
+    var input = document.querySelector('[data-price-input="' + courseId + '"]');
+    var st = document.getElementById('adminStatus');
+    var raw = toLatinDigits(input ? input.value : '').replace(/[^\d]/g, '');
+    var price = raw === '' ? null : Number(raw);
+    if (price !== null && (!isFinite(price) || price <= 0)) {
+      st.style.display = 'block'; st.textContent = 'قیمت رو فقط به صورت عدد بفرست.';
+      return;
+    }
+    st.style.display = 'block'; st.textContent = 'در حال ذخیره…';
+    fetch(WORKER + '/api/price', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ initData: initData, courseId: courseId, price: price })
+    }).then(function (r) { return r.json().then(function (j) { return { status: r.status, body: j }; }); })
+    .then(function (res) {
+      if (res.status === 200 && res.body.ok) {
+        var c = null;
+        lastCourses.forEach(function (x) { if (x.id === courseId) c = x; });
+        st.textContent = price === null
+          ? 'قیمت «' + (c ? c.title : courseId) + '» حذف شد.'
+          : '✅ قیمت «' + (c ? c.title : courseId) + '» شد ' + faNum(price) + ' تومان.';
+        haptic();
+        load();
+      } else {
+        st.textContent = res.body.error || 'ذخیره نشد؛ دوباره امتحان کن.';
+      }
+    }).catch(function () { st.textContent = 'ارتباط برقرار نشد؛ دوباره امتحان کن.'; });
+  }
+
   function load() {
     var url = WORKER + '/api/courses' + (initData ? ('?initData=' + encodeURIComponent(initData)) : '');
     fetch(url).then(function (r) {
@@ -345,7 +421,9 @@
     }).then(function (data) {
       isAdmin = !!data.is_admin;
       if (isAdmin) document.getElementById('adminBadge').style.display = 'block';
-      render(data.courses || [], true);
+      lastCourses = data.courses || [];
+      render(lastCourses, true);
+      if (isAdmin && panelOpen) renderAdminPanel();
     }).catch(function () {
       render(STATIC_COURSES, false);
     });
@@ -444,7 +522,13 @@
 
   document.getElementById('adminBtn').addEventListener('click', function () {
     haptic();
-    openLink(BOT_URL);
+    panelOpen = !panelOpen;
+    var p = document.getElementById('adminPanel');
+    p.style.display = panelOpen ? 'block' : 'none';
+    if (panelOpen) {
+      renderAdminPanel();
+      p.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   });
 
   load();
