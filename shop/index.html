@@ -53,6 +53,13 @@
     -webkit-text-fill-color: transparent; color: transparent;
   }
   header p { color: var(--hint); font-size: 14px; margin-top: 6px; }
+  /* ---------- profile chip (Telegram login, top of the page) ---------- */
+  .profile { display: flex; align-items: center; gap: 10px; padding: 10px 4px 2px; }
+  .profile .avatar { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(167, 139, 250, 0.55); flex: none; }
+  .profile .avatar-fallback { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #7c3aed, #22c55e); color: #fff; font-weight: 900; font-size: 17px; display: flex; align-items: center; justify-content: center; flex: none; border: 2px solid rgba(167, 139, 250, 0.55); }
+  .profile .who { line-height: 1.35; min-width: 0; }
+  .profile .who b { font-size: 14.5px; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .profile .who span { font-size: 12px; color: var(--hint); display: block; }
   .stats {
     display: flex; gap: 8px; justify-content: center; margin-top: 16px;
   }
@@ -249,6 +256,7 @@
 </head>
 <body>
 <div class="wrap">
+  <div class="profile" id="profileBar" style="display:none"></div>
   <header>
     <img src="../assets/snake-hero.webp" alt="مهرادیار">
     <h1>فروشگاه دوره‌های <span>مهراد</span></h1>
@@ -659,7 +667,31 @@
     }).catch(function () { st.textContent = 'ارتباط برقرار نشد؛ دوباره امتحان کن.'; });
   }
 
+  // Profile chip: Telegram sends the user's name + photo with every Mini App
+  // launch (initDataUnsafe.user), so the login is always visible at the top.
+  // Display-only; the server re-validates identity on every API call.
+  function renderProfile() {
+    var u = tg && tg.initDataUnsafe && tg.initDataUnsafe.user;
+    var bar = document.getElementById('profileBar');
+    if (!u || !bar) return;
+    var name = [u.first_name, u.last_name].filter(Boolean).join(' ') || 'کاربر تلگرام';
+    bar.innerHTML = (u.photo_url
+      ? '<img class="avatar" src="' + esc(u.photo_url) + '" alt="">'
+      : '<div class="avatar-fallback">' + esc(name.charAt(0)) + '</div>')
+      + '<div class="who"><b>' + esc(name) + '</b>'
+      + (u.username ? '<span>@' + esc(u.username) + '</span>' : '<span>وارد شده با تلگرام</span>') + '</div>';
+    bar.style.display = 'flex';
+    var img = bar.querySelector('img.avatar');
+    if (img) img.addEventListener('error', function () {
+      var fb = document.createElement('div');
+      fb.className = 'avatar-fallback';
+      fb.textContent = name.charAt(0);
+      img.replaceWith(fb);
+    });
+  }
+
   function load() {
+    renderProfile();
     // Opened inside Telegram but with NO initData = launched from a keyboard
     // button (Telegram sends no identity on that path): admin panel, ordering
     // and My Courses all need the in-chat button instead — say so.
