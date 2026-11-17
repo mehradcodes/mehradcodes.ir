@@ -218,6 +218,33 @@
   .actions .btn { flex: 1; }
   .note { text-align: center; color: var(--hint); font-size: 12.5px; line-height: 2; margin-top: 28px; }
   .note a { color: #c4b5fd; }
+  /* ---------- my courses + player ---------- */
+  .sess { font-size: 12px; color: var(--hint); margin-top: 6px; }
+  .my-row { display: flex; align-items: center; gap: 10px; padding: 11px 0; border-top: 1px solid rgba(255,255,255,0.07); }
+  .my-row:first-of-type { border-top: none; }
+  .my-row .m-title { flex: 1; font-size: 14.5px; font-weight: 700; line-height: 1.8; }
+  .my-row .m-title small { display: block; font-size: 11.5px; color: var(--hint); font-weight: 400; }
+  .player-wrap { position: relative; background: #000; border-radius: 14px; overflow: hidden; margin-top: 12px; }
+  .player-wrap video { width: 100%; display: block; max-height: 70vh; }
+  .wm {
+    position: absolute; z-index: 2; pointer-events: none;
+    font-size: 13px; font-weight: 700; direction: ltr; white-space: nowrap;
+    color: rgba(255,255,255,0.30); text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+    transition: top 1.2s ease, left 1.2s ease;
+  }
+  .sess-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+  .sess-btns .btn { padding: 8px 13px; font-size: 12.5px; }
+  .sess-btns .btn.active { background: linear-gradient(135deg, #7c3aed, #4f46e5); box-shadow: 0 6px 18px rgba(124, 58, 237, 0.40); }
+  /* ---------- admin video rows ---------- */
+  .v-row { padding: 10px 0; border-top: 1px solid rgba(255,255,255,0.07); }
+  .v-row:first-of-type { border-top: none; }
+  .v-row .v-head { display: flex; align-items: center; gap: 8px; }
+  .v-row .v-title { flex: 1; font-size: 13.5px; font-weight: 700; line-height: 1.8; }
+  .v-row .v-title small { display: block; font-size: 11px; color: var(--hint); font-weight: 400; }
+  .v-row input { width: 90px; }
+  .v-list { margin: 6px 0 2px; padding-right: 4px; }
+  .v-list div { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--hint); padding: 3px 0; }
+  .v-list button { background: none; border: none; color: #f87171; font-size: 15px; cursor: pointer; padding: 2px 6px; }
 </style>
 </head>
 <body>
@@ -249,12 +276,34 @@
     <button id="phoneBtn" type="button">باز کردن ربات</button>
   </div>
 
+  <div id="myCourses" style="display:none;">
+    <div class="card" style="border-color: rgba(34,197,94,0.45);">
+      <h3>🎬 دوره‌های من</h3>
+      <div id="myCoursesList"></div>
+    </div>
+  </div>
+
+  <div id="player" style="display:none;">
+    <div class="card">
+      <h3 id="playerTitle"></h3>
+      <div class="player-wrap" id="playerWrap">
+        <video id="playerVideo" controls playsinline preload="metadata"></video>
+        <div class="wm" id="playerWm"></div>
+      </div>
+      <div id="playerSessions" style="margin-top:12px;"></div>
+      <div class="actions"><button class="btn ghost" id="playerBackBtn" type="button">بازگشت</button></div>
+    </div>
+  </div>
+
   <div id="adminPanel" style="display:none;">
     <div class="card admin-panel">
       <h3>⚙️ پنل مدیریت قیمت‌ها</h3>
       <p class="admin-hint">قیمت رو به تومان بنویس و «ذخیره» رو بزن (عدد فارسی هم قبوله). اگه خالی بذاری و ذخیره کنی، قیمت اون دوره حذف می‌شه و دکمه‌ی ثبت‌نامش مخفی می‌شه.</p>
       <div id="adminRows"></div>
       <div class="status" id="adminStatus" style="display:none;"></div>
+      <h3 style="margin-top:18px;">🎬 ویدیوهای دوره‌ها</h3>
+      <p class="admin-hint">ویدیوی هر جلسه رو توی چت ربات بفرست و دوره‌ش رو انتخاب کن؛ بعد اینجا لیست جلسات رو می‌بینی و می‌تونی جلسه حذف کنی یا تعداد کل جلسات دوره رو تنظیم کنی.</p>
+      <div id="adminVideoRows"><div class="status">…</div></div>
     </div>
   </div>
 
@@ -305,6 +354,11 @@
   var receiptFile = null;
   var lastCourses = [];
   var panelOpen = false;
+  var myCourses = [];
+  var myPhone = null;
+  var myUserId = null;
+  var wmTimer = null;
+  var currentPlayerCourse = null;
 
   if (tg) {
     try {
@@ -374,6 +428,10 @@
           + '<h3>' + esc(c.title) + ' <span class="pill ' + pillClass(c.level) + '">' + esc(c.level) + '</span></h3>'
           + '</div>'
           + '<p class="desc">' + esc(c.desc) + '</p>'
+          + (function () {
+              var total = (c.sessions_total != null && c.sessions_total > 0) ? c.sessions_total : (c.sessions || 0);
+              return total > 0 ? '<div class="sess">🎬 ' + faNum(total) + ' جلسه</div>' : '';
+            })()
           + '<div class="row">'
           + (priced
               ? '<span class="price">' + faNum(c.price) + ' <small>تومان</small></span>'
@@ -408,6 +466,162 @@
     document.querySelectorAll('[data-price-save]').forEach(function (b) {
       b.addEventListener('click', function () { haptic(); savePrice(b.getAttribute('data-price-save')); });
     });
+    loadAdminVideos();
+  }
+
+  function loadAdminVideos() {
+    var box = document.getElementById('adminVideoRows');
+    if (!box) return;
+    box.innerHTML = '<div class="status">در حال بارگذاری…</div>';
+    fetch(WORKER + '/api/videos?initData=' + encodeURIComponent(initData))
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      if (!data.ok) { box.innerHTML = '<div class="status err">' + esc(data.error || 'خطا') + '</div>'; return; }
+      renderAdminVideos(data.courses || []);
+    }).catch(function () { box.innerHTML = '<div class="status err">ارتباط برقرار نشد.</div>'; });
+  }
+
+  function renderAdminVideos(courses) {
+    var html = '';
+    courses.forEach(function (c) {
+      html += '<div class="v-row">'
+        + '<div class="v-head">'
+        + '<div class="v-title">' + esc(c.title) + '<small>' + c.sessions.length + ' جلسه‌ی ویدیویی ثبت شده' + (c.sessions_total ? ' · هدف: ' + c.sessions_total + ' جلسه' : '') + '</small></div>'
+        + '<input type="text" inputmode="numeric" data-total-input="' + esc(c.id) + '" placeholder="تعداد جلسات" value="' + (c.sessions_total != null ? esc(String(c.sessions_total)) : '') + '">'
+        + '<button class="btn" type="button" data-total-save="' + esc(c.id) + '">ذخیره</button>'
+        + '</div>'
+        + '<div class="v-list">';
+      c.sessions.forEach(function (s) {
+        html += '<div><span style="flex:1;">' + esc(s.title) + '</span>'
+          + '<button type="button" data-vremove="' + esc(c.id) + ':' + s.index + '" title="حذف جلسه">✕</button></div>';
+      });
+      html += '</div></div>';
+    });
+    document.getElementById('adminVideoRows').innerHTML = html;
+    document.querySelectorAll('[data-total-save]').forEach(function (b) {
+      b.addEventListener('click', function () { haptic(); saveTotal(b.getAttribute('data-total-save')); });
+    });
+    document.querySelectorAll('[data-vremove]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        haptic();
+        var parts = b.getAttribute('data-vremove').split(':');
+        removeSession(parts[0], Number(parts[1]));
+      });
+    });
+  }
+
+  function saveTotal(courseId) {
+    var input = document.querySelector('[data-total-input="' + courseId + '"]');
+    var raw = toLatinDigits(input ? input.value : '').replace(/[^\d]/g, '');
+    var total = raw === '' ? 0 : Number(raw);
+    fetch(WORKER + '/api/video-admin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ initData: initData, courseId: courseId, action: 'set_total', total: total })
+    }).then(function (r) { return r.json(); })
+    .then(function (j) { if (j.ok) { loadAdminVideos(); load(); } });
+  }
+
+  function removeSession(courseId, index) {
+    fetch(WORKER + '/api/video-admin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ initData: initData, courseId: courseId, action: 'remove', index: index })
+    }).then(function (r) { return r.json(); })
+    .then(function (j) { if (j.ok) { loadAdminVideos(); load(); } });
+  }
+
+  function formatPhone(d) {
+    var s = String(d || '').replace(/[^0-9]/g, '');
+    if (s.indexOf('98') === 0 && s.length === 12) return '0' + s.slice(2);
+    return s;
+  }
+
+  function loadMyCourses() {
+    if (!initData) return;
+    fetch(WORKER + '/api/my-courses?initData=' + encodeURIComponent(initData))
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      if (!data.ok) return;
+      myCourses = data.courses || [];
+      myPhone = data.phone || null;
+      myUserId = data.user_id || null;
+      renderMyCourses();
+    }).catch(function () {});
+  }
+
+  function renderMyCourses() {
+    var box = document.getElementById('myCourses');
+    if (!myCourses.length) { box.style.display = 'none'; return; }
+    var html = '';
+    myCourses.forEach(function (c) {
+      html += '<div class="my-row">'
+        + '<div class="m-title">' + esc(c.title) + '<small>' + c.sessions.length + ' جلسه‌ی ویدیویی</small></div>'
+        + '<button class="btn" type="button" data-watch="' + esc(c.id) + '">🎬 تماشا</button>'
+        + '</div>';
+    });
+    document.getElementById('myCoursesList').innerHTML = html;
+    box.style.display = 'block';
+    document.querySelectorAll('[data-watch]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        haptic();
+        var c = null;
+        myCourses.forEach(function (x) { if (x.id === b.getAttribute('data-watch')) c = x; });
+        if (c) openPlayer(c, 0);
+      });
+    });
+  }
+
+  function moveWm() {
+    var wm = document.getElementById('playerWm');
+    var wrap = document.getElementById('playerWrap');
+    if (!wm || !wrap) return;
+    var maxL = Math.max(0, wrap.clientWidth - wm.offsetWidth - 8);
+    var maxT = Math.max(0, wrap.clientHeight - wm.offsetHeight - 8);
+    wm.style.left = (4 + Math.random() * maxL) + 'px';
+    wm.style.top = (4 + Math.random() * maxT) + 'px';
+  }
+
+  function openPlayer(course, idx) {
+    currentPlayerCourse = course;
+    var s = course.sessions[idx];
+    if (!s) return;
+    document.getElementById('list').style.display = 'none';
+    document.getElementById('order').style.display = 'none';
+    document.getElementById('myCourses').style.display = 'none';
+    document.getElementById('playerTitle').textContent = course.title + ' — ' + s.title;
+    var v = document.getElementById('playerVideo');
+    v.src = WORKER + '/api/stream?token=' + encodeURIComponent(s.token);
+    v.load();
+    var wm = document.getElementById('playerWm');
+    wm.textContent = formatPhone(myPhone) || ('ID ' + (myUserId || ''));
+    wm.style.left = '12px'; wm.style.top = '12px';
+    var btns = '';
+    course.sessions.forEach(function (x, i) {
+      btns += '<button class="btn' + (i === idx ? ' active' : '') + '" type="button" data-session="' + i + '">' + esc(x.title) + '</button>';
+    });
+    document.getElementById('playerSessions').innerHTML = '<div class="sess-btns">' + btns + '</div>';
+    document.querySelectorAll('[data-session]').forEach(function (b) {
+      b.addEventListener('click', function () { haptic(); openPlayer(course, Number(b.getAttribute('data-session'))); });
+    });
+    document.getElementById('player').style.display = 'block';
+    window.scrollTo(0, 0);
+    if (wmTimer) clearInterval(wmTimer);
+    wmTimer = setInterval(moveWm, 5000);
+    setTimeout(moveWm, 1200);
+    v.play().catch(function () {});
+  }
+
+  function closePlayer() {
+    var v = document.getElementById('playerVideo');
+    try { v.pause(); } catch (e) {}
+    v.removeAttribute('src');
+    v.load();
+    if (wmTimer) { clearInterval(wmTimer); wmTimer = null; }
+    document.getElementById('player').style.display = 'none';
+    document.getElementById('list').style.display = 'block';
+    renderMyCourses();
+    load();
   }
 
   function savePrice(courseId) {
@@ -454,6 +668,7 @@
       lastCourses = data.courses || [];
       render(lastCourses, true);
       if (isAdmin && panelOpen) renderAdminPanel();
+      loadMyCourses();
     }).catch(function () {
       render(STATIC_COURSES, false);
     });
@@ -564,6 +779,11 @@
   document.getElementById('phoneBtn').addEventListener('click', function () {
     haptic();
     openLink(BOT_URL);
+  });
+
+  document.getElementById('playerBackBtn').addEventListener('click', function () {
+    haptic();
+    closePlayer();
   });
 
   load();
