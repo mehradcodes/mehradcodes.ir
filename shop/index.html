@@ -558,6 +558,7 @@
       if (!data.ok) return;
       myCourses = data.courses || [];
       myPhone = data.phone || null;
+      if (data.phone) setProfilePhone(data.phone);
       myUserId = data.user_id || null;
       renderMyCourses();
     }).catch(function () {});
@@ -670,6 +671,18 @@
   // Profile chip: Telegram sends the user's name + photo with every Mini App
   // launch (initDataUnsafe.user), so the login is always visible at the top.
   // Display-only; the server re-validates identity on every API call.
+  // The chip shows the name on top and the phone number below it. The number
+  // comes from the server (/api/courses returns the stored phone, and so does
+  // /api/my-courses) and arrives after the first render, so the subtitle is
+  // updated in place by setProfilePhone. Until then it is the @username.
+  var profilePhone = null;
+  function setProfilePhone(phone) {
+    profilePhone = phone || null;
+    var bar = document.getElementById('profileBar');
+    var sub = bar && bar.querySelector('.who span');
+    if (sub && profilePhone) sub.textContent = formatPhone(profilePhone);
+  }
+
   function renderProfile() {
     var u = tg && tg.initDataUnsafe && tg.initDataUnsafe.user;
     var bar = document.getElementById('profileBar');
@@ -679,7 +692,8 @@
       ? '<img class="avatar" src="' + esc(u.photo_url) + '" alt="">'
       : '<div class="avatar-fallback">' + esc(name.charAt(0)) + '</div>')
       + '<div class="who"><b>' + esc(name) + '</b>'
-      + (u.username ? '<span>@' + esc(u.username) + '</span>' : '<span>وارد شده با تلگرام</span>') + '</div>';
+      + (profilePhone ? '<span>' + esc(formatPhone(profilePhone)) + '</span>'
+        : (u.username ? '<span>@' + esc(u.username) + '</span>' : '<span>وارد شده با تلگرام</span>')) + '</div>';
     bar.style.display = 'flex';
     var img = bar.querySelector('img.avatar');
     if (img) img.addEventListener('error', function () {
@@ -708,6 +722,7 @@
       if (initData && data.phone_verified === false) pn.style.display = 'block';
       else pn.style.display = 'none';
       lastCourses = data.courses || [];
+      if (data.phone) setProfilePhone(data.phone);
       render(lastCourses, true);
       if (isAdmin && panelOpen) renderAdminPanel();
       loadMyCourses();
