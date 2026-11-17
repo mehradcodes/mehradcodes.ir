@@ -8,7 +8,7 @@
 |---|---|
 | **Apache / cPanel / DirectAdmin** (معمول‌ترین هاست‌های ایرانی) | هیچی — فایل `.htaccess` که توی روت سایته با بقیه‌ی فایل‌ها آپلود می‌شه و خودش هدرها رو ست می‌کنه. |
 | **Nginx** | محتوای `nginx-headers.conf` رو توی بلاک `server { }` سایت بذار (اگه یه `location` خودش `add_header` داره، این خط‌ها رو اونجا هم تکرار کن). |
-| **Cloudflare Pages / Netlify** | فایل `_headers` توی همین پوشه‌ست و خودش خونده می‌شه. |
+| **Cloudflare Pages / Netlify** | فایل `_headers` توی روت سایته و خودش خونده می‌شه. |
 
 ## یه قانون مهم: فقط یه منبع هدر
 
@@ -21,7 +21,7 @@
 هر ۶ هدر با همون مقداریه که الان لایوه (نمره‌ی **A+** توی securityheaders.com):
 
 - Strict-Transport-Security: `max-age=31536000; includeSubDomains`
-- Content-Security-Policy: `default-src 'self'; script-src 'self' https://telegram.org; style-src 'self'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://mehradcodes-bot.haj0-0mehrad.workers.dev; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests`
+- Content-Security-Policy: `default-src 'self'; script-src 'self' https://telegram.org https://static.cloudflareinsights.com; style-src 'self'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://mehradcodes-bot.haj0-0mehrad.workers.dev https://static.cloudflareinsights.com https://cloudflareinsights.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests`
 - X-Frame-Options: `SAMEORIGIN`
 - X-Content-Type-Options: `nosniff`
 - Referrer-Policy: `strict-origin-when-cross-origin`

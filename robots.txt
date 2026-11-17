@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Agentmap: https://mehradcodes.ir/.well-known/ard.json

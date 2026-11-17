@@ -164,8 +164,8 @@ section[id], footer[id] { scroll-margin-top: 76px; }
   animation: pulse 2s ease-in-out infinite;
 }
 @keyframes pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.5); }
-  50% { box-shadow: 0 0 0 7px rgba(74, 222, 128, 0); }
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.55; }
 }
 .giant {
   margin: 22px 0 0;
@@ -485,7 +485,7 @@ section[id], footer[id] { scroll-margin-top: 76px; }
   font-size: 2rem;
   font-weight: 900;
   line-height: 1.2;
-  color: transparent;
+  color: #c4b5fd;
   -webkit-text-stroke: 1.5px rgba(124, 58, 237, 0.8);
   margin-bottom: 8px;
 }
@@ -622,10 +622,10 @@ section[id], footer[id] { scroll-margin-top: 76px; }
   padding: 0 20px 20px;
 }
 .btn-telegram {
-  color: #fff; background: #229ED9;
-  box-shadow: 0 8px 24px rgba(34, 158, 217, 0.35);
+  color: #fff; background: #0d6e9c;
+  box-shadow: 0 8px 24px rgba(13, 110, 156, 0.35);
 }
-.btn-telegram:hover { background: #2AABEE; }
+.btn-telegram:hover { background: #0f7aa8; }
 
 /* Shop banner: the Telegram store on the main site */
 .shop-banner {
