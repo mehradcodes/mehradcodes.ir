@@ -4,6 +4,14 @@
     font-weight: 100 900;
     font-display: swap;
   }
+  /* Latin subset (already on the site): the hero "M" and Latin digits render in Vazirmatn too. */
+  @font-face {
+    font-family: 'Vazirmatn';
+    src: url('../assets/fonts/vazirmatn-latin.woff2') format('woff2');
+    font-weight: 100 900;
+    font-display: swap;
+    unicode-range: U+0000-00FF, U+2000-206F, U+20A0-20BF;
+  }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
     color-scheme: dark;
@@ -32,9 +40,110 @@
   .wrap { max-width: 560px; margin: 0 auto; }
   /* ---------- hero ---------- */
   header { text-align: center; padding: 6px 0 8px; position: relative; }
-  header img {
-    width: 118px; height: auto;
-    filter: drop-shadow(0 0 26px rgba(34, 197, 94, 0.55));
+  /* ---------- 3D M hero (pure CSS base: the M shows even if JS fails) ---------- */
+  .hero-3d {
+    --rx: 0deg;
+    --ry: 0deg;
+    position: relative;
+    height: 172px;
+    margin: 2px auto 0;
+    perspective: 900px;
+    perspective-origin: 50% 42%;
+  }
+  .hero-glow {
+    position: absolute; left: 50%; top: 52%;
+    width: 230px; height: 150px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(closest-side, rgba(124, 58, 237, 0.55), rgba(79, 70, 229, 0.18) 55%, transparent 75%);
+    filter: blur(10px);
+    pointer-events: none;
+  }
+  .m3d-tilt {
+    position: absolute; inset: 0;
+    transform-style: preserve-3d;
+    transform: rotateX(var(--rx)) rotateY(var(--ry));
+    will-change: transform;
+  }
+  .m3d-spin {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    transform-style: preserve-3d;
+    animation: m-sway 9s ease-in-out infinite;
+  }
+  .m3d-float {
+    display: flex; align-items: center; justify-content: center;
+    transform-style: preserve-3d;
+    animation: m-float 6s ease-in-out infinite;
+  }
+  @keyframes m-sway {
+    0%, 100% { transform: rotateY(-13deg); }
+    50% { transform: rotateY(13deg); }
+  }
+  @keyframes m-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-9px); }
+  }
+  .m3d {
+    position: relative;
+    width: 122px; height: 122px;
+    transform-style: preserve-3d;
+  }
+  .m-layer {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 118px; font-weight: 900; line-height: 1;
+    color: #fff;
+    text-shadow: 0 0 26px rgba(167, 139, 250, 0.45);
+    -webkit-font-smoothing: antialiased;
+  }
+  /* Extrusion: 10 stacked copies, white face → deep indigo back. */
+  .m-layer:nth-child(1) { color: #ffffff; transform: translateZ(0); }
+  .m-layer:nth-child(2) { color: #efeaff; transform: translateZ(-4px); }
+  .m-layer:nth-child(3) { color: #ddd2ff; transform: translateZ(-8px); }
+  .m-layer:nth-child(4) { color: #c9b8ff; transform: translateZ(-12px); }
+  .m-layer:nth-child(5) { color: #b39dff; transform: translateZ(-16px); }
+  .m-layer:nth-child(6) { color: #a184fc; transform: translateZ(-20px); }
+  .m-layer:nth-child(7) { color: #8b68f5; transform: translateZ(-24px); }
+  .m-layer:nth-child(8) { color: #7c3aed; transform: translateZ(-28px); }
+  .m-layer:nth-child(9) { color: #6a31d8; transform: translateZ(-32px); }
+  .m-layer:nth-child(10) { color: #4f46e5; transform: translateZ(-36px); }
+  /* Orbiting glow particles. */
+  .orbit {
+    position: absolute; inset: 0;
+    transform-style: preserve-3d;
+    pointer-events: none;
+  }
+  .orbit-ring {
+    position: absolute; left: 50%; top: 50%;
+    width: 0; height: 0;
+    transform-style: preserve-3d;
+    animation: orbit-spin var(--dur, 8s) linear infinite;
+  }
+  .orbit-ring .dot {
+    position: absolute;
+    width: var(--size, 7px); height: var(--size, 7px);
+    border-radius: 50%;
+    background: var(--color, #a78bfa);
+    box-shadow: 0 0 10px 2px var(--color, #a78bfa);
+    transform: translateX(var(--radius, 96px)) translateY(-50%);
+  }
+  @keyframes orbit-spin {
+    from { transform: rotateX(var(--tilt, 54deg)) rotateZ(0deg); }
+    to { transform: rotateX(var(--tilt, 54deg)) rotateZ(360deg); }
+  }
+  .orbit-ring:nth-child(1) { --dur: 7s;  --tilt: 54deg; --radius: 96px;  --color: #a78bfa; --size: 7px; }
+  .orbit-ring:nth-child(2) { --dur: 9s;  --tilt: 48deg; --radius: 108px; --color: #4ade80; --size: 6px; animation-direction: reverse; animation-delay: -3s; }
+  .orbit-ring:nth-child(3) { --dur: 11s; --tilt: 56deg; --radius: 100px; --color: #ffffff; --size: 5px; animation-delay: -5s; }
+  .orbit-ring:nth-child(4) { --dur: 8s;  --tilt: 50deg; --radius: 110px; --color: #7c3aed; --size: 8px; animation-direction: reverse; animation-delay: -2s; }
+  .orbit-ring:nth-child(5) { --dur: 12s; --tilt: 52deg; --radius: 98px;  --color: #22c55e; --size: 5px; animation-delay: -7s; }
+  .orbit-ring:nth-child(6) { --dur: 10s; --tilt: 58deg; --radius: 104px; --color: #c4b5fd; --size: 6px; animation-direction: reverse; animation-delay: -4s; }
+  /* Paused (page hidden): idle animations freeze. */
+  .hero-3d.paused .m3d-spin,
+  .hero-3d.paused .m3d-float,
+  .hero-3d.paused .orbit-ring { animation-play-state: paused; }
+  @media (prefers-reduced-motion: reduce) {
+    .m3d-spin { animation: none; transform: rotateY(-10deg); }
+    .m3d-float, .orbit-ring { animation: none; }
   }
   header h1 {
     font-size: 27px; font-weight: 900; margin-top: 12px; line-height: 1.5;
@@ -153,6 +262,14 @@
     margin-bottom: 12px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.30);
   }
+  /* 3D tilt for course cards (JS-driven; springs back on release). */
+  #list { perspective: 1100px; }
+  #list .card {
+    transform-style: preserve-3d;
+    transition: transform 0.45s cubic-bezier(0.22, 0.9, 0.32, 1.25);
+    will-change: transform;
+  }
+  #list .card.tilt-active { transition: none; }
   .c-head { display: flex; align-items: center; gap: 11px; }
   .c-icon {
     width: 46px; height: 46px; flex-shrink: 0;
