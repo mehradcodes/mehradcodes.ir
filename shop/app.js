@@ -337,6 +337,84 @@
     wm.style.top = (4 + Math.random() * maxT) + 'px';
   }
 
+  // Custom player controls: the native controls' overflow menu keeps a
+  // Download item in Chrome on Android even with controlslist="nodownload",
+  // so the player has its own bar and NO native controls at all.
+  var PC_PLAY_SVG = '<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
+  var PC_PAUSE_SVG = '<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>';
+  var PC_RATES = [1, 1.25, 1.5, 2];
+  var pcRateIdx = 0;
+  function pcFmt(t) {
+    if (!isFinite(t) || t < 0) t = 0;
+    t = Math.floor(t);
+    var h = Math.floor(t / 3600), m = Math.floor((t % 3600) / 60), s = t % 60;
+    var mm = h ? String(m).padStart(2, '0') : String(m), ss = String(s).padStart(2, '0');
+    return h ? h + ':' + mm + ':' + ss : mm + ':' + ss;
+  }
+  function pcSetPlaying(playing) {
+    var b = document.getElementById('pcPlay');
+    if (b) b.innerHTML = playing ? PC_PAUSE_SVG : PC_PLAY_SVG;
+    var big = document.getElementById('pcBigPlay');
+    if (big) big.hidden = playing;
+  }
+  function pcReset() {
+    var seek = document.getElementById('pcSeek');
+    if (seek) { seek.value = 0; seek.max = 0; }
+    var cur = document.getElementById('pcCur'); if (cur) cur.textContent = '0:00';
+    var dur = document.getElementById('pcDur'); if (dur) dur.textContent = '0:00';
+    pcRateIdx = 0;
+    var sp = document.getElementById('pcSpeed'); if (sp) sp.textContent = '1×';
+    pcSetPlaying(false);
+  }
+  function setupPlayerControls() {
+    var v = document.getElementById('playerVideo');
+    var playBtn = document.getElementById('pcPlay');
+    var bigBtn = document.getElementById('pcBigPlay');
+    var seek = document.getElementById('pcSeek');
+    var cur = document.getElementById('pcCur');
+    var dur = document.getElementById('pcDur');
+    var speedBtn = document.getElementById('pcSpeed');
+    var pipBtn = document.getElementById('pcPip');
+    var fullBtn = document.getElementById('pcFull');
+    if (!v || !playBtn) return;
+    pcSetPlaying(false);
+    function toggle() { if (v.paused) v.play().catch(function () {}); else v.pause(); }
+    playBtn.addEventListener('click', function () { haptic(); toggle(); });
+    if (bigBtn) bigBtn.addEventListener('click', function () { haptic(); toggle(); });
+    v.addEventListener('click', function () { toggle(); });
+    v.addEventListener('play', function () { pcSetPlaying(true); });
+    v.addEventListener('pause', function () { pcSetPlaying(false); });
+    v.addEventListener('ended', function () { pcSetPlaying(false); });
+    v.addEventListener('loadedmetadata', function () {
+      if (seek) seek.max = isFinite(v.duration) ? v.duration : 0;
+      if (dur) dur.textContent = pcFmt(v.duration);
+    });
+    v.addEventListener('timeupdate', function () {
+      if (seek && document.activeElement !== seek) seek.value = v.currentTime;
+      if (cur) cur.textContent = pcFmt(v.currentTime);
+    });
+    if (seek) seek.addEventListener('input', function () { v.currentTime = parseFloat(seek.value) || 0; });
+    if (speedBtn) speedBtn.addEventListener('click', function () {
+      pcRateIdx = (pcRateIdx + 1) % PC_RATES.length;
+      v.playbackRate = PC_RATES[pcRateIdx];
+      speedBtn.textContent = PC_RATES[pcRateIdx] + '×';
+    });
+    if (pipBtn) {
+      if (!document.pictureInPictureEnabled) pipBtn.style.display = 'none';
+      else pipBtn.addEventListener('click', function () {
+        try { if (document.pictureInPictureElement) document.exitPictureInPicture(); else v.requestPictureInPicture(); } catch (e) {}
+      });
+    }
+    if (fullBtn) fullBtn.addEventListener('click', function () {
+      var wrap = document.getElementById('playerWrap');
+      try {
+        if (document.fullscreenElement) document.exitFullscreen();
+        else if (wrap && wrap.requestFullscreen) wrap.requestFullscreen();
+        else if (v.requestFullscreen) v.requestFullscreen();
+      } catch (e) {}
+    });
+  }
+
   function openPlayer(course, idx) {
     currentPlayerCourse = course;
     var s = course.sessions[idx];
@@ -354,6 +432,7 @@
       if (st) st.textContent = 'خطا در پخش ویدیو (کد ' + code + ') — اگه پخش نشد، کد رو به پشتیبانی بگو.';
     };
     v.load();
+    pcReset();
     var wm = document.getElementById('playerWm');
     wm.textContent = formatPhone(myPhone) || ('ID ' + (myUserId || ''));
     wm.style.left = '12px'; wm.style.top = '12px';
@@ -378,6 +457,7 @@
     try { v.pause(); } catch (e) {}
     v.removeAttribute('src');
     v.load();
+    pcReset();
     if (wmTimer) { clearInterval(wmTimer); wmTimer = null; }
     document.getElementById('player').style.display = 'none';
     document.getElementById('list').style.display = 'block';
@@ -717,5 +797,6 @@
     }).catch(function () { load(); });
   }
 
+  setupPlayerControls();
   boot();
 })();
