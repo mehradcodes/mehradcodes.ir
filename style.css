@@ -634,7 +634,7 @@ section[id], footer[id] { scroll-margin-top: 76px; }
   background: linear-gradient(135deg, rgba(124, 58, 237, 0.16), rgba(34, 197, 94, 0.12));
   border: 1px solid rgba(167, 139, 250, 0.35);
 }
-.shop-banner img { width: 110px; height: auto; flex: none; filter: drop-shadow(0 0 22px rgba(34, 197, 94, 0.45)); }
+.shop-banner img { width: 110px; height: auto; flex: none; filter: drop-shadow(0 0 22px rgba(124, 58, 237, 0.55)); }
 .shop-banner h3 { font-size: 20px; font-weight: 900; margin: 0 0 6px; }
 .shop-banner p { color: var(--muted); font-size: 14.5px; line-height: 1.9; margin: 0 0 12px; }
 .shop-steps { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-bottom: 14px; font-size: 13.5px; }
