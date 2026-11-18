@@ -166,8 +166,13 @@
           + '</div>'
           + '<p class="desc">' + esc(c.desc) + '</p>'
           + (function () {
-              var total = (c.sessions_total != null && c.sessions_total > 0) ? c.sessions_total : (c.sessions || 0);
-              return total > 0 ? '<div class="sess">🎬 ' + faNum(total) + ' جلسه</div>' : '';
+              // Badge shows UPLOADED video sessions only (c.videos); when a
+              // planned total is set it reads «۳ از ۱۲ جلسه». No badge at
+              // all while a course has no videos.
+              var n = (c.videos != null ? c.videos : c.sessions) || 0;
+              if (n <= 0) return '';
+              var total = (c.sessions_total != null && c.sessions_total > n) ? c.sessions_total : 0;
+              return '<div class="sess">🎬 ' + faNum(n) + (total > 0 ? ' از ' + faNum(total) : '') + ' جلسه</div>';
             })()
           + '<div class="row">'
           + (priced
