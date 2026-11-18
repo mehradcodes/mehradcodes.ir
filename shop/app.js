@@ -5,7 +5,7 @@
   // WebApp object with empty initData. The native bridge object exists only
   // in Telegram's own webview; platform is 'unknown' outside Telegram.
   var inTelegram = !!(window.TelegramWebviewProxy || (tg && tg.platform && tg.platform !== 'unknown'));
-  var WORKER = 'https://mehradcodes-bot.haj0-0mehrad.workers.dev';
+  var WORKER = 'https://mehradcodes.ir'; // Same-origin API (Cloudflare Worker route mehradcodes.ir/api/*) — the video <video> src must be same-origin: the site CSP (default-src 'self', no media-src) blocks media from workers.dev outright (black screen, error code 4, no request ever reaches the Worker).
   var BOT_URL = 'https://t.me/mehradcodes_bot';
   var initData = tg ? (tg.initData || '') : '';
   // Browser login: the Telegram Login Widget issues a session token, kept in
