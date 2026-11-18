@@ -347,6 +347,12 @@
     document.getElementById('playerTitle').textContent = course.title + ' — ' + s.title;
     var v = document.getElementById('playerVideo');
     v.src = WORKER + '/api/stream?token=' + encodeURIComponent(s.token);
+    var st = document.getElementById('playerStatus');
+    if (st) st.textContent = '';
+    v.onerror = function () {
+      var code = v.error ? v.error.code : '?';
+      if (st) st.textContent = 'خطا در پخش ویدیو (کد ' + code + ') — اگه پخش نشد، کد رو به پشتیبانی بگو.';
+    };
     v.load();
     var wm = document.getElementById('playerWm');
     wm.textContent = formatPhone(myPhone) || ('ID ' + (myUserId || ''));
